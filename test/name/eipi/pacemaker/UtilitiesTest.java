@@ -13,7 +13,7 @@ public class UtilitiesTest {
     @Test
     public void testFancyToString() {
         DataLodge db = new DataLodge("utilities.test");
-        User user = (User) db.create(new User("Damien", "Donovan", "123@abc.ie", "Something"));
+        User user = db.edit(new User("Damien", "Donovan", "123@abc.ie", "Something"));
         System.out.println(Utilities.toFancyString(user));
         user = null;
         System.out.println(Utilities.toFancyString(user));

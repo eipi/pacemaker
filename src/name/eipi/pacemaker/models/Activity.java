@@ -1,7 +1,7 @@
 package name.eipi.pacemaker.models;
 
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Activity extends BaseEntity {
@@ -9,7 +9,7 @@ public class Activity extends BaseEntity {
     /**
      * routes
      */
-    private List<Long> routes = new LinkedList<>();
+    private List<Long> routes = new ArrayList<>();
 
     private Long id;
     private String type;

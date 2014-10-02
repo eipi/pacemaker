@@ -1,7 +1,7 @@
 package name.eipi.pacemaker.models;
 
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class User extends BaseEntity {
 
@@ -21,7 +21,7 @@ public class User extends BaseEntity {
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        activities = new LinkedList<>();
+        activities = new ArrayList<>();
     }
 
     public Long getId() {

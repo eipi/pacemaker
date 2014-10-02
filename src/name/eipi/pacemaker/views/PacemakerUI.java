@@ -4,17 +4,18 @@ import asg.cliche.Command;
 import asg.cliche.Param;
 import name.eipi.pacemaker.controllers.PacemakerAPI;
 import name.eipi.pacemaker.models.User;
+import name.eipi.pacemaker.utils.Utilities;
 
 import java.util.Collection;
 
 /**
  * Created by dbdon_000 on 27/09/2014.
  */
-public class UI {
+public class PacemakerUI {
 
     private final PacemakerAPI paceApi;
 
-    public UI(PacemakerAPI api) {
+    public PacemakerUI(PacemakerAPI api) {
         paceApi = api;
     }
 
@@ -37,7 +38,7 @@ public class UI {
     public void getUser(
             @Param(name = "email") String email) {
         User user = paceApi.getUserByEmail(email);
-        System.out.println(user);
+        System.out.println(Utilities.toFancyString(user));
     }
 
     @Command(description = "Delete a User")

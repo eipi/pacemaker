@@ -9,6 +9,7 @@ import name.eipi.services.logger.LoggerFactory;
 import java.util.*;
 
 public class PacemakerAPI {
+
     private static final Logger LOG = LoggerFactory.getInstance(PacemakerAPI.class);
 
     private static final DataLodge db = new DataLodge();
@@ -61,7 +62,7 @@ public class PacemakerAPI {
         SortedSet<Activity> activities = new TreeSet<Activity>();
         User u = db.read(User.class, userId);
         Collection<Long> c = u.getActivities();
-        for (Long actvId  : c) {
+        for (Long actvId : c) {
             activities.add(db.read(Activity.class, actvId));
         }
         return activities;
@@ -71,7 +72,7 @@ public class PacemakerAPI {
         SortedSet<Location> locations = new TreeSet<Location>();
         Activity a = db.read(Activity.class, actvId);
         Collection<Long> c = a.getRoutes();
-        for (Long locId  : c) {
+        for (Long locId : c) {
             locations.add(db.read(Location.class, locId));
         }
         return locations;
@@ -85,10 +86,15 @@ public class PacemakerAPI {
     }
 
     public Location addLocation(Long activityId, Integer latitude, Integer longitude) {
-        Location location = db.edit(new Location(latitude, longitude));
         Activity activity = db.read(Activity.class, activityId);
-        activity.addRoute(location.getId());
-        return location;
+        if (activity != null) {
+            Location location = db.edit(new Location(latitude, longitude));
+            activity.addRoute(location.getId());
+            return location;
+        }
+        LOG.error("Unknown activity " + activityId);
+        return null;
+
     }
 
     public void save() {

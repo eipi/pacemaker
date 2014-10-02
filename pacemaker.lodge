@@ -1,1 +1,0 @@
-{"tree-map":[{"entry":{"string":"name.eipi.pacemaker.models.User","tree-map":[{"entry":{"long":1,"user":{"id":1,"firstName":1,"lastName":1,"email":1,"password":1,"activities":[{"@class":"linked-list"}]}}}]}}]}
