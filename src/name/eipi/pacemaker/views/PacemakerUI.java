@@ -4,7 +4,7 @@ import asg.cliche.Command;
 import asg.cliche.Param;
 import name.eipi.pacemaker.controllers.PacemakerAPI;
 import name.eipi.pacemaker.models.User;
-import name.eipi.pacemaker.utils.Utilities;
+import name.eipi.pacemaker.util.Utilities;
 
 import java.util.Collection;
 
