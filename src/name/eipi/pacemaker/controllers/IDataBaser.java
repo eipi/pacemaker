@@ -13,4 +13,8 @@ public interface IDataBaser {
 
     void read() throws Exception;
 
+    void toggleFormat();
+
+    void cleanUp();
+
 }

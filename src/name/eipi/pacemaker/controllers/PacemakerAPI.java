@@ -98,9 +98,7 @@ public class PacemakerAPI {
     }
 
     public void save() {
-        if (db.save()) {
-            System.out.println("Saved ok");
-        }
+        db.save();
     }
 
     public void load() {
@@ -113,8 +111,8 @@ public class PacemakerAPI {
         db.reset();
     }
 
-    public void changeFileFormat() {
-        db.changeFileFormat();
+    public void toggleFormat() {
+        db.toggleFormat();
     }
 
 }

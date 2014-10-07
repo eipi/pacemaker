@@ -18,7 +18,7 @@ public class DataLodge {
     /**
      * Databaser.
      */
-    private DataBaser db = null;
+    private IDataBaser db = null;
 
     /*
     public static <Entity extends BaseEntity> DataLodge<Entity> getTyped(DataLodge instance, Class<Entity> typeToken){
@@ -34,18 +34,19 @@ public class DataLodge {
 
     public DataLodge() {
         // Default
-        db = new DataBaser();
+        db = DatabaserFactory.getInstance();
         initWorkingMemory();
     }
 
     public DataLodge(String s) {
         // Custom Location
-        db = new DataBaser(s);
+        db = DatabaserFactory.getInstance(s);
         initWorkingMemory();
     }
 
     private void initWorkingMemory() {
-        Object data = db.load();
+    //    db.read();
+        Object data = db.pop();
         if (data != null && data instanceof Map) {
             workingMemory = (Map) data;
         } else {
@@ -126,12 +127,13 @@ public class DataLodge {
     }
 
 
-    public boolean save() {
-        return db.save(workingMemory);
+    public void save() {
+        db.push(workingMemory);
+    //    db.write();
     }
 
     public boolean load() {
-        Object obj = db.load();
+        Object obj = db.pop();
         if (obj != null && obj instanceof Map) {
             workingMemory = (Map) obj;
             return true;
@@ -139,8 +141,8 @@ public class DataLodge {
         return false;
     }
 
-    public void changeFileFormat() {
-        db.changeFileFormat();
+    public void toggleFormat() {
+        db.toggleFormat();
     }
 
     public <T extends BaseEntity> void reset() {
@@ -148,7 +150,7 @@ public class DataLodge {
 
     }
 
-    boolean deleteFile() {
-        return db.deleteFile();
+    void deleteFile() {
+        db.cleanUp();
     }
 }

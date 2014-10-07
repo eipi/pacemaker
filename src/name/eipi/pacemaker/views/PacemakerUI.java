@@ -93,7 +93,7 @@ public class PacemakerUI {
 
     @Command(description = "Change file format")
     public void changeFileFormat() {
-        paceApi.changeFileFormat();
+        paceApi.toggleFormat();
     }
 
 }

@@ -15,7 +15,7 @@ public class DataLodgeTest {
         User user = new User("Banana", "Joe", "abc", "etc");
         DataLodge db = new DataLodge("datalodge.test");
         // defaults to json, changing to xml
-        db.changeFileFormat();
+        db.toggleFormat();
         User u = db.edit(user);
         assertFalse(u.getId() == null);
         db.save();
@@ -25,7 +25,7 @@ public class DataLodgeTest {
         User reloaded = db.read(User.class, u.getId());
         assertFalse(reloaded == null);
         assertTrue(reloaded.getEmail().equals(user.getEmail()));
-        assertTrue(db.deleteFile());
+        db.deleteFile();
 
     }
 

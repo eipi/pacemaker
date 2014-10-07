@@ -14,21 +14,31 @@ import java.io.*;
  * <p/>
  * Created by naysayer on 02/10/2014.
  */
-public class DataBaser {
+public class DataBaserXStreamImpl implements IDataBaser {
 
-    private static final Logger LOG = LoggerFactory.getInstance(DataBaser.class);
+    private enum Format {
+        Json(new JettisonMappedXmlDriver()), Xml(new DomDriver());
+        final AbstractDriver driver;
+
+        Format(AbstractDriver drv) {
+            this.driver = drv;
+        }
+    }
+
+    private static final Logger LOG = LoggerFactory.getInstance(DataBaserXStreamImpl.class);
 
     private String connString = "default.lodge";
 
     private XStream xstream = null;
     private Format fmt = Format.Xml;
 
-    public DataBaser() {
-        initializeStorage(connString);
+    public DataBaserXStreamImpl() {
+        read();
     }
 
-    public DataBaser(final String connStringIn) {
-        initializeStorage(connStringIn);
+    public DataBaserXStreamImpl(final String connStringIn) {
+        connString = connStringIn;
+        read();
     }
 
     private static void safelyClose(Closeable closeable) {
@@ -48,7 +58,8 @@ public class DataBaser {
 //        xstream.alias("location", Location.class);
     }
 
-    public void changeFileFormat() {
+    @Override
+    public void toggleFormat() {
         // TODO a better way?
         if (fmt == Format.Json) {
             fmt = Format.Xml;
@@ -58,11 +69,16 @@ public class DataBaser {
         initializeXstream();
     }
 
+    @Override
+    public void cleanUp() {
+        deleteFile();
+    }
 
-    private void initializeStorage(String s) {
+
+    public void read() {
         try {
             initializeXstream();
-            load();
+            //load();
         } catch (Throwable t) {
             LOG.error("Unable to connect to file, may not be able to save.");
         }
@@ -73,7 +89,7 @@ public class DataBaser {
         return file.delete();
     }
 
-    public Object load() {
+    public Object pop() {
 
         Reader reader = null;
         ObjectInputStream is = null;
@@ -95,7 +111,12 @@ public class DataBaser {
         return null;
     }
 
-    public boolean save(Object workingMemory) {
+    @Override
+    public void write() throws Exception {
+
+    }
+
+    public void push(Object workingMemory) {
         Writer writer = null;
         ObjectOutputStream outStream = null;
 
@@ -104,7 +125,6 @@ public class DataBaser {
             writer = new FileWriter(file, false);
             outStream = xstream.createObjectOutputStream(writer);
             outStream.writeObject(workingMemory);
-            return true;
         } catch (Throwable t) {
             LOG.error("Error saving to file.", t);
         } finally {
@@ -112,16 +132,7 @@ public class DataBaser {
             safelyClose(writer);
 
         }
-        return false;
     }
 
-    private enum Format {
-        Json(new JettisonMappedXmlDriver()), Xml(new DomDriver());
-        final AbstractDriver driver;
-
-        Format(AbstractDriver drv) {
-            this.driver = drv;
-        }
-    }
 
 }

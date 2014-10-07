@@ -11,6 +11,12 @@ import java.util.Collection;
  */
 public class Utilities {
 
+    public static enum Border {
+        line, asterix, dashed
+    }
+
+    private static Border border = Border.asterix;
+
     public static <T extends BaseEntity> String toFancyString(Collection<T> coll) {
 
         if (coll == null) {
@@ -20,12 +26,13 @@ public class Utilities {
         try {
             if (!coll.isEmpty()) {
 
-                Collection<Element> elements = new ArrayList<Element>();
+                Collection<Collection<Element>> elements = new ArrayList<Collection<Element>>();
                 Method[] methods = coll.iterator().next().getClass().getDeclaredMethods();
 
                 Integer maxHorizBorder = 1;
 
                 for (T t : coll) {
+                    Collection element = new ArrayList<>();
                     Integer horizBorder = 1;
                     for (Method m : methods) {
                         if (m.getName().startsWith("get")) {
@@ -35,25 +42,28 @@ public class Utilities {
                             Integer nameLength = fieldName.length();
                             Integer valLength = value == null ? 0 : value.toString().length();
                             Integer maxLength = nameLength >= valLength ? nameLength + 2 : valLength + 2;
-                            elements.add(new Element(fieldName,
+                            element.add(new Element(fieldName,
                                     value == null ? "" : value.toString(),
                                     maxLength));
                             horizBorder += maxLength;
                         }
-
                     }
                     maxHorizBorder = horizBorder > maxHorizBorder ? horizBorder : maxHorizBorder;
+                    elements.add(element);
                 }
 
 
                 appendHoriz(sb, maxHorizBorder).append("\r\n");
-                Element title = elements.iterator().next();
-                    sb.append(padAndBorder(title.name, title.length));
+                Element firstOne = elements.iterator().next().iterator().next();
+                    sb.append(padAndBorder(firstOne.name, firstOne.length));
                 appendHoriz(sb.append("\r\n"), maxHorizBorder).append("\r\n");
-                for (Element e : elements) {
-                    sb.append(padAndBorder(e.value, e.length));
+                for (Collection<Element> objs : elements) {
+                    for (Element element : objs) {
+                        sb.append(padAndBorder(element.value, element.length));
+                    }
+                    appendHoriz(sb.append("\r\n"), maxHorizBorder).append("\r\n");
                 }
-                appendHoriz(sb.append("\r\n"), maxHorizBorder).append("\r\n");
+
 
             }
 
@@ -106,8 +116,9 @@ public class Utilities {
     }
 
     private static StringBuilder appendHoriz(StringBuilder sb, Integer n) {
+        char c = border == Border.asterix ? '*' : '_';
         for (int i = 0; i < n; i++) {
-            sb.append("_");
+            sb.append(c);
         }
         return sb;
     }
@@ -142,4 +153,5 @@ class Element {
         this.value = value;
         this.length = length;
     }
+
 }
