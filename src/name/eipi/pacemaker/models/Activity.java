@@ -1,19 +1,22 @@
 package name.eipi.pacemaker.models;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Activity extends BaseEntity {
 
-    /**
-     * routes
-     */
-    private List<Long> routes = new ArrayList<>();
-
+    @Getter @Setter
     private String type;
+    @Getter @Setter
     private String location;
+    @Getter @Setter
     private double distance;
+    @Getter
+    private Collection<Long> routes;
 
     /**
      * No default constructor, just this.
@@ -26,41 +29,11 @@ public class Activity extends BaseEntity {
         this.type = type;
         this.location = location;
         this.distance = distance;
+        this.routes = new ArrayList<>();
     }
 
     public void addRoute(Long id) {
         routes.add(id);
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public Activity setType(String type) {
-        this.type = type;
-        return this;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public Activity setLocation(String location) {
-        this.location = location;
-        return this;
-    }
-
-    public double getDistance() {
-        return distance;
-    }
-
-    public Activity setDistance(double distance) {
-        this.distance = distance;
-        return this;
-    }
-
-    public Collection<Long> getRoutes() {
-        return routes;
     }
 
 }

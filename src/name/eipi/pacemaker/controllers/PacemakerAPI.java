@@ -11,37 +11,25 @@ import java.util.*;
 
 public class PacemakerAPI {
 
+    /** Logger. */
     private static final Logger LOG = LoggerFactory.getInstance(PacemakerAPI.class);
 
+    /** Manages read and write operations for objects extending BaseEntity. */
     private static final DataLodge db = new DataLodge();
 
+    /** A convenience index of users by email. Allows quick lookup and validation. */
     private Map<String, User> emailIndex = new HashMap<>();
 
-    public Collection<User> getUsers() {
-        return db.getAll(User.class);
-    }
-
-    public void deleteUsers() {
-        db.reset();
-        emailIndex.clear();
-    }
-
+    // User operations
     public User createUser(String firstName, String lastName, String email, String password) {
         if (emailIndex.containsKey(email)) {
             throw new IllegalArgumentException("User already exists : " + email);
         }
-        User user = new User(firstName, lastName, email, password);
-        return emailIndex.put(email, db.edit(user));
-    }
+        User user = db.edit(new User(firstName, lastName, email, password));
+        emailIndex.put(email, user);
+        return user;
 
-    public void deleteUser(String email) {
-        if (emailIndex.containsKey(email)) {
-            db.delete(emailIndex.remove(email));
-        } else {
-            throw new IllegalArgumentException("User not found : " + email);
-        }
     }
-
     public User getUserByEmail(String email) {
         if (emailIndex.containsKey(email)) {
             return emailIndex.get(email);
@@ -49,7 +37,6 @@ public class PacemakerAPI {
             throw new IllegalArgumentException("User not found : " + email);
         }
     }
-
     private User getUser(Long id) {
         User user = db.read(User.class, id);
         if (user != null) {
@@ -58,9 +45,20 @@ public class PacemakerAPI {
             throw new IllegalArgumentException("User not found : " + id);
         }
     }
+    public Collection<User> getUsers() {
+        return db.getAll(User.class);
+    }
+    public void deleteUser(String email) {
+        if (emailIndex.containsKey(email)) {
+            db.delete(emailIndex.remove(email));
+        } else {
+            throw new IllegalArgumentException("User not found : " + email);
+        }
+    }
+
 
     public Set getActivities(Long userId) {
-        SortedSet<Activity> activities = new TreeSet<Activity>();
+        Set<Activity> activities = new HashSet<Activity>();
         User u = db.read(User.class, userId);
         Collection<Long> c = u.getActivities();
         for (Long actvId : c) {
@@ -70,7 +68,7 @@ public class PacemakerAPI {
     }
 
     public Set getLocations(Long actvId) {
-        SortedSet<Location> locations = new TreeSet<Location>();
+        Set<Location> locations = new HashSet<Location>();
         Activity a = db.read(Activity.class, actvId);
         Collection<Long> c = a.getRoutes();
         for (Long locId : c) {
@@ -98,6 +96,7 @@ public class PacemakerAPI {
 
     }
 
+    // DB Operations
     public void save() {
         db.save();
     }
@@ -105,6 +104,8 @@ public class PacemakerAPI {
     public void load() {
         if (db.load()) {
             System.out.println("Loaded ok");
+        } else {
+            System.out.println("No data found");
         }
     }
 

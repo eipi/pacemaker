@@ -58,13 +58,13 @@ public class PacemakerUI {
     }
 
     @Command(description = "Get Activities for User")
-    public void getActivities(@Param(name = "user id") Integer userId) {
-        //TODO
+    public void getActivities(@Param(name = "user id") Long userId) {
+        paceApi.getActivities(userId);
     }
 
     @Command(description = "Get Locations for Activity")
-    public void getLocations(@Param(name = "activity id") Integer activityId) {
-        //TODO
+    public void getLocations(@Param(name = "activity id") Long activityId) {
+        paceApi.getLocations(activityId);
     }
 
     @Command(description = "Add a Location")
