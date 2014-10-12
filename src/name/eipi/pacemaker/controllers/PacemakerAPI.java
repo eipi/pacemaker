@@ -15,15 +15,23 @@ public class PacemakerAPI {
     private static final Logger LOG = LoggerFactory.getInstance(PacemakerAPI.class);
 
     /** Manages read and write operations for objects extending BaseEntity. */
-    private static final DataLodge db = new DataLodge();
+    private final DataLodge db;
 
     /** A convenience index of users by email. Allows quick lookup and validation. */
     private Map<String, User> emailIndex = new HashMap<>();
 
+    public PacemakerAPI() {
+        db = new DataLodge();
+    }
+
+    public PacemakerAPI(String fileName) {
+        db =  new DataLodge(fileName);
+    }
+
     // User operations
     public User createUser(String firstName, String lastName, String email, String password) {
         if (emailIndex.containsKey(email)) {
-            throw new IllegalArgumentException("User already exists : " + email);
+            System.err.println("User already exists : " + email);
         }
         User user = db.edit(new User(firstName, lastName, email, password));
         emailIndex.put(email, user);
@@ -34,7 +42,8 @@ public class PacemakerAPI {
         if (emailIndex.containsKey(email)) {
             return emailIndex.get(email);
         } else {
-            throw new IllegalArgumentException("User not found : " + email);
+            System.err.println("User not found : " + email);
+            return null;
         }
     }
     private User getUser(Long id) {
@@ -42,7 +51,8 @@ public class PacemakerAPI {
         if (user != null) {
             return user;
         } else {
-            throw new IllegalArgumentException("User not found : " + id);
+            System.err.println("User not found : " + id);
+            return null;
         }
     }
     public Collection<User> getUsers() {
@@ -52,7 +62,7 @@ public class PacemakerAPI {
         if (emailIndex.containsKey(email)) {
             db.delete(emailIndex.remove(email));
         } else {
-            throw new IllegalArgumentException("User not found : " + email);
+            System.err.println("User not found : " + email);
         }
     }
 
@@ -103,9 +113,9 @@ public class PacemakerAPI {
 
     public void load() {
         if (db.load()) {
-            System.out.println("Loaded ok");
+            System.err.println("Loaded ok");
         } else {
-            System.out.println("No data found");
+            System.err.println("No data found");
         }
     }
 
@@ -116,5 +126,7 @@ public class PacemakerAPI {
     public void toggleFormat() {
         db.toggleFormat();
     }
+
+    public void cleanUp() {db.cleanUp();}
 
 }

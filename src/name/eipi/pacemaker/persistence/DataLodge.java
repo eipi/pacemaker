@@ -45,8 +45,6 @@ public class DataLodge {
     }
 
     private void initWorkingMemory() {
-    //    db.read();
-        Object data = db.read();
         if (!load())  {
             reset();
         }
@@ -58,7 +56,6 @@ public class DataLodge {
             workingMemory = (Map) obj;
             return true;
         }
-        reset();
         return false;
     }
 
@@ -141,7 +138,7 @@ public class DataLodge {
         db.write(workingMemory);
     }
 
-    void deleteFile() {
+    public void cleanUp() {
         db.cleanUp();
     }
 

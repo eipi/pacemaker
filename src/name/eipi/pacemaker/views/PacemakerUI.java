@@ -22,7 +22,7 @@ public class PacemakerUI {
     @Command(description = "Get all Users")
     public void getUsers() {
         Collection<User> users = paceApi.getUsers();
-        System.out.println(users);
+        System.out.println(Utilities.toFancyString(users));
     }
 
     @Command(description = "Create a new User")

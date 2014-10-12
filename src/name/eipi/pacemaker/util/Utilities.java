@@ -5,18 +5,16 @@ import name.eipi.pacemaker.models.BaseEntity;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by dbdon_000 on 27/09/2014.
  */
 public class Utilities {
 
-    public static enum Border {
-        line, asterix, dashed
-    }
-
-    private static Border border = Border.asterix;
-
+    private static String CR = "\r\n";
+    
     public static <T extends BaseEntity> String toFancyString(Collection<T> coll) {
 
         if (coll == null) {
@@ -27,46 +25,59 @@ public class Utilities {
             if (!coll.isEmpty()) {
 
                 Collection<Collection<Element>> elements = new ArrayList<Collection<Element>>();
-                Method[] methods = coll.iterator().next().getClass().getDeclaredMethods();
+                Method[] methods = coll.iterator().next().getClass().getMethods();
 
                 Integer maxHorizBorder = 1;
+
+                Map<String, Integer> maxLengthsMap = new HashMap<>();
 
                 for (T t : coll) {
                     Collection element = new ArrayList<>();
                     Integer horizBorder = 1;
                     for (Method m : methods) {
-                        if (m.getName().startsWith("get")) {
-                            String fieldName = m.getName().replaceFirst("get", "");
-
+                        String name = m.getName();
+                        if (name.startsWith("get") && !name.equals("getClass")) {
+                            String fieldName = name.replaceFirst("get", "");
                             Object value = m.invoke(t);
                             Integer nameLength = fieldName.length();
                             Integer valLength = value == null ? 0 : value.toString().length();
                             Integer maxLength = nameLength >= valLength ? nameLength + 2 : valLength + 2;
-                            element.add(new Element(fieldName,
-                                    value == null ? "" : value.toString(),
-                                    maxLength));
-                            horizBorder += maxLength;
+                            if (maxLengthsMap.containsKey(fieldName)) {
+                                if (maxLength > maxLengthsMap.get(fieldName)) {
+                                    maxLengthsMap.put(fieldName, maxLength);
+                                }
+                            } else {
+                                maxLengthsMap.put(fieldName, maxLength);
+                            }
+                            element.add(new Element(fieldName, value == null ? "" : value.toString(), null));
+                            horizBorder += maxLength + 1;
                         }
                     }
                     maxHorizBorder = horizBorder > maxHorizBorder ? horizBorder : maxHorizBorder;
                     elements.add(element);
                 }
 
+                // Top Line
+                appendHoriz(sb, maxHorizBorder).append(CR);
 
-                appendHoriz(sb, maxHorizBorder).append("\r\n");
-                Element firstOne = elements.iterator().next().iterator().next();
-                    sb.append(padAndBorder(firstOne.name, firstOne.length));
-                appendHoriz(sb.append("\r\n"), maxHorizBorder).append("\r\n");
+                // Headings
+                for (Element e : elements.iterator().next()) {
+                    appendVert(sb).append(padAndBorder(e.name, maxLengthsMap.get(e.name)));
+                }
+                appendVert(sb).append(CR);
+                appendVert(appendHoriz(appendVert(sb), maxHorizBorder - 2)).append(CR);
+
+                // Data
                 for (Collection<Element> objs : elements) {
                     for (Element element : objs) {
-                        sb.append(padAndBorder(element.value, element.length));
+                        appendVert(sb).append(padAndBorder(element.value, maxLengthsMap.get(element.name)));
                     }
-                    appendHoriz(sb.append("\r\n"), maxHorizBorder).append("\r\n");
+                    appendVert(sb).append(CR);
                 }
-
+                // Bottom Line
+                appendVert(appendHoriz(appendVert(sb), maxHorizBorder - 2)).append(CR);
 
             }
-
 
         } catch (Throwable t) {
             t.printStackTrace();
@@ -81,32 +92,40 @@ public class Utilities {
         StringBuilder sb = new StringBuilder();
         try {
             Collection<Element> elements = new ArrayList<Element>();
-            Method[] methods = obj.getClass().getDeclaredMethods();
+            Method[] methods = obj.getClass().getMethods();
             Integer horizBorder = 1;
             for (Method m : methods) {
-                if (m.getName().startsWith("get")) {
-                    String fieldName = m.getName().replaceFirst("get", "");
+                String name = m.getName();
+                if (name.startsWith("get") && !name.equals("getClass")) {
+                    String fieldName = name.replaceFirst("get", "");
                     Object value = m.invoke(obj);
                     Integer nameLength = fieldName.length();
                     Integer valLength = value == null ? 0 : value.toString().length();
-                    Integer maxLength = nameLength >= valLength ? nameLength + 2 : valLength + 2;
-                    elements.add(new Element(fieldName,
-                            value == null ? "" : value.toString(),
-                            maxLength));
-                    horizBorder += maxLength;
+                    Integer maxLength = nameLength >= valLength ? nameLength + 2: valLength + 2;
+                    elements.add(new Element(fieldName, value == null ? "" : value.toString(), maxLength));
+                    horizBorder += maxLength + 1;
                 }
 
             }
 
-            appendHoriz(sb, horizBorder).append("\r\n");
+            // Top Line
+            appendHoriz(sb, horizBorder).append(CR);
+
+            // Headings
             for (Element e : elements) {
-                sb.append(padAndBorder(e.name, e.length));
+                appendVert(sb).append(padAndBorder(e.name, e.length));
             }
-            appendHoriz(sb.append("\r\n"), horizBorder).append("\r\n");
+            appendVert(sb).append(CR);
+            appendVert(appendHoriz(appendVert(sb), horizBorder - 2)).append(CR);
+
+            // Data
             for (Element e : elements) {
-                sb.append(padAndBorder(e.value, e.length));
+                appendVert(sb).append(padAndBorder(e.value, e.length));
             }
-            appendHoriz(sb.append("\r\n"), horizBorder).append("\r\n");
+            appendVert(sb).append(CR);
+
+            // Bottom Line
+            appendVert(appendHoriz(appendVert(sb), horizBorder - 2)).append(CR);
 
 
         } catch (Throwable t) {
@@ -116,11 +135,14 @@ public class Utilities {
     }
 
     private static StringBuilder appendHoriz(StringBuilder sb, Integer n) {
-        char c = border == Border.asterix ? '*' : '_';
         for (int i = 0; i < n; i++) {
-            sb.append(c);
+            sb.append('_');
         }
         return sb;
+    }
+
+    private static StringBuilder appendVert(StringBuilder sb) {
+        return sb.append('|');
     }
 
     private static StringBuilder appendSpace(StringBuilder sb, Integer n) {

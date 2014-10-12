@@ -1,15 +1,11 @@
 package name.eipi.pacemaker.controllers;
 
-import junit.framework.*;
 import name.eipi.pacemaker.models.Activity;
 import name.eipi.pacemaker.models.Location;
 import name.eipi.pacemaker.models.User;
-import name.eipi.pacemaker.persistence.DataLodge;
 import org.junit.*;
-import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Collection;
 
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertFalse;
@@ -28,7 +24,7 @@ public class PacemakerApiTest {
 
     @Before
     public void setUp() {
-        api = new PacemakerAPI();
+        api = new PacemakerAPI("PacemakerApiTest");
 
         me = api.createUser("Damien", "Donovan", email, "elephantastic");
         you = api.createUser("The Great", "Anon", "us@them.pi", "anonymous");
@@ -36,7 +32,8 @@ public class PacemakerApiTest {
 
     @After
     public void tearDown() {
-
+        me = you = null;
+        api.cleanUp();
     }
 
     @Test

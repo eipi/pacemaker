@@ -26,7 +26,7 @@ public class DataLodgeTest {
         User reloaded = db.read(User.class, u.getId());
         assertFalse(reloaded == null);
         assertTrue(reloaded.getEmail().equals(user.getEmail()));
-        db.deleteFile();
+        db.cleanUp();
 
     }
 
