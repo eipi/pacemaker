@@ -3,6 +3,7 @@ package name.eipi.pacemaker.controllers;
 import name.eipi.pacemaker.models.Activity;
 import name.eipi.pacemaker.models.Location;
 import name.eipi.pacemaker.models.User;
+import name.eipi.pacemaker.persistence.DataLodge;
 import name.eipi.services.logger.Logger;
 import name.eipi.services.logger.LoggerFactory;
 

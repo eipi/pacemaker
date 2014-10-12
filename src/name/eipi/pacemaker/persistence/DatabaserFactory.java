@@ -1,4 +1,4 @@
-package name.eipi.pacemaker.controllers;
+package name.eipi.pacemaker.persistence;
 
 /**
  * Created by dbdon_000 on 03/10/2014.

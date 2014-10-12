@@ -1,6 +1,6 @@
 package name.eipi.pacemaker;
 
-import name.eipi.pacemaker.controllers.DataLodge;
+import name.eipi.pacemaker.persistence.DataLodge;
 import name.eipi.pacemaker.models.User;
 import name.eipi.pacemaker.util.Utilities;
 import org.junit.Test;

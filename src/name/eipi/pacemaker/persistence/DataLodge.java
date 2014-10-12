@@ -1,4 +1,4 @@
-package name.eipi.pacemaker.controllers;
+package name.eipi.pacemaker.persistence;
 
 
 import name.eipi.pacemaker.models.BaseEntity;
@@ -46,14 +46,28 @@ public class DataLodge {
 
     private void initWorkingMemory() {
     //    db.read();
-        Object data = db.pop();
-        if (data != null && data instanceof Map) {
-            workingMemory = (Map) data;
-        } else {
+        Object data = db.read();
+        if (!load())  {
             reset();
         }
     }
 
+    public boolean load() {
+        Object obj = db.read();
+        if (obj != null && obj instanceof Map) {
+            workingMemory = (Map) obj;
+            return true;
+        }
+        reset();
+        return false;
+    }
+
+    public void reset() {
+        workingMemory = new HashMap<>();
+
+    }
+
+    // BEGIN DATA OPS
     public <T extends BaseEntity> T edit(T t) {
         Map index = workingMemory.get(t.getClass().getName());
         if (index != null) {
@@ -95,12 +109,6 @@ public class DataLodge {
         return all;
     }
 
-    public <T extends BaseEntity> Collection<T> search(T t) {
-        // search not yet implemented
-        // just return all of type for now
-        return getAll(t.getClass());
-    }
-
     public <T extends BaseEntity> T delete(T t) {
         if (t.getId() != null) {
             Map index = workingMemory.get(t.getClass().getName());
@@ -125,32 +133,23 @@ public class DataLodge {
             return t;
         }
     }
+    // END DATA OPS
 
 
+    // BEGIN FILE OPS
     public void save() {
-        db.push(workingMemory);
-    //    db.write();
-    }
-
-    public boolean load() {
-        Object obj = db.pop();
-        if (obj != null && obj instanceof Map) {
-            workingMemory = (Map) obj;
-            return true;
-        }
-        return false;
-    }
-
-    public void toggleFormat() {
-        db.toggleFormat();
-    }
-
-    public <T extends BaseEntity> void reset() {
-        workingMemory = new HashMap<>();
-
+        db.write(workingMemory);
     }
 
     void deleteFile() {
         db.cleanUp();
     }
+
+
+    public void toggleFormat() {
+        db.toggleFormat();
+    }
+
+    // END FILE OPS
+
 }

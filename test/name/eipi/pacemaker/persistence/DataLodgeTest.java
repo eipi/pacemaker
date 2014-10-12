@@ -1,6 +1,7 @@
-package name.eipi.pacemaker.controllers;
+package name.eipi.pacemaker.persistence;
 
 import name.eipi.pacemaker.models.User;
+import name.eipi.pacemaker.persistence.DataLodge;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;

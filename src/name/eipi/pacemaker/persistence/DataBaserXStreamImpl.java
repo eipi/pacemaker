@@ -1,4 +1,4 @@
-package name.eipi.pacemaker.controllers;
+package name.eipi.pacemaker.persistence;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.AbstractDriver;
@@ -33,12 +33,12 @@ public class DataBaserXStreamImpl implements IDataBaser {
     private Format fmt = Format.Xml;
 
     public DataBaserXStreamImpl() {
-        read();
+        initializeXstream();
     }
 
     public DataBaserXStreamImpl(final String connStringIn) {
         connString = connStringIn;
-        read();
+        initializeXstream();
     }
 
     private static void safelyClose(Closeable closeable) {
@@ -74,49 +74,39 @@ public class DataBaserXStreamImpl implements IDataBaser {
         deleteFile();
     }
 
-
-    public void read() {
-        try {
-            initializeXstream();
-            //load();
-        } catch (Throwable t) {
-            LOG.error("Unable to connect to file, may not be able to save.");
-        }
-    }
-
     boolean deleteFile() {
         File file = new File(connString);
         return file.delete();
     }
 
-    public Object pop() {
+    @Override
+    public Object read() {
 
+        File file = new File(connString);
         Reader reader = null;
         ObjectInputStream is = null;
+        if (file.isFile()) {
+            try {
+                reader = new FileReader(connString);
+                is = xstream.createObjectInputStream(reader);
+                Object obj = is.readObject();
+                if (obj != null) {
+                    return obj;
+                }
+            } catch (Exception ex) {
+                LOG.error(ex.getMessage(), ex);
 
-        try {
-            reader = new FileReader(connString);
-            is = xstream.createObjectInputStream(reader);
-            Object obj = is.readObject();
-            if (obj != null) {
-                return obj;
+            } finally {
+                safelyClose(is);
+                safelyClose(reader);
             }
-        } catch (Exception ex) {
-            LOG.error(ex.getMessage(), ex);
-
-        } finally {
-            safelyClose(is);
-            safelyClose(reader);
         }
+
         return null;
     }
 
     @Override
-    public void write() throws Exception {
-
-    }
-
-    public void push(Object workingMemory) {
+    public void write(Object workingMemory) {
         Writer writer = null;
         ObjectOutputStream outStream = null;
 

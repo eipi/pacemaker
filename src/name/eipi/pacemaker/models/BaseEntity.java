@@ -6,9 +6,15 @@ import java.lang.reflect.Field;
 
 public abstract class BaseEntity {
 
-    public abstract Long getId();
+    private Long id;
 
-    public abstract void setId(Long id);
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {

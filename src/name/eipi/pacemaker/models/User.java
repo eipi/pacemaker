@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 public class User extends BaseEntity {
 
-    private Long id;
     private String firstName;
     private String lastName;
     private String email;
@@ -24,17 +23,8 @@ public class User extends BaseEntity {
         activities = new ArrayList<>();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public void addActivity(Long id) {
         activities.add(id);
-
     }
 
     public String getFirstName() {

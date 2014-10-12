@@ -11,7 +11,6 @@ public class Activity extends BaseEntity {
      */
     private List<Long> routes = new ArrayList<>();
 
-    private Long id;
     private String type;
     private String location;
     private double distance;
@@ -31,14 +30,6 @@ public class Activity extends BaseEntity {
 
     public void addRoute(Long id) {
         routes.add(id);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getType() {

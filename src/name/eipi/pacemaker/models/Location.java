@@ -2,7 +2,6 @@ package name.eipi.pacemaker.models;
 
 public class Location extends BaseEntity {
 
-    private Long id;
     private int latitude;
     private int longitude;
 
@@ -12,14 +11,6 @@ public class Location extends BaseEntity {
     public Location(int latitude, int longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public int getLatitude() {
