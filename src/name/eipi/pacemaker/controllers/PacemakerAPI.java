@@ -4,6 +4,7 @@ import name.eipi.pacemaker.models.Activity;
 import name.eipi.pacemaker.models.Location;
 import name.eipi.pacemaker.models.User;
 import name.eipi.pacemaker.persistence.DataLodge;
+import name.eipi.pacemaker.util.SortingUtils;
 import name.eipi.services.logger.Logger;
 import name.eipi.services.logger.LoggerFactory;
 
@@ -22,111 +23,175 @@ public class PacemakerAPI {
 
     public PacemakerAPI() {
         db = new DataLodge();
+        rebuildUserIndex();
     }
 
     public PacemakerAPI(String fileName) {
         db =  new DataLodge(fileName);
+        rebuildUserIndex();
+    }
+
+    private void rebuildUserIndex() {
+        emailIndex.clear();
+        Collection<User> users = getUsers();
+        for (User user : users) {
+            emailIndex.put(user.getEmail(), user);
+        }
     }
 
     // User operations
-    public User createUser(String firstName, String lastName, String email, String password) {
+    public Response<User> createUser(String firstName, String lastName, String email, String password) {
+        Response response = new Response();
         if (emailIndex.containsKey(email)) {
-            System.err.println("User already exists : " + email);
+            response.setSuccess(Boolean.FALSE);
+            response.setMessage("This email is already registered.");
+            LOG.error("User already exists : " + email);
+        } else {
+            User user = db.edit(new User(firstName, lastName, email, password));
+            emailIndex.put(email, user);
+            response.setSuccess(Boolean.TRUE);
+            response.add(user);
         }
-        User user = db.edit(new User(firstName, lastName, email, password));
-        emailIndex.put(email, user);
-        return user;
-
+        return response;
     }
+
     public User getUserByEmail(String email) {
         if (emailIndex.containsKey(email)) {
             return emailIndex.get(email);
         } else {
-            System.err.println("User not found : " + email);
+            LOG.error("User not found : " + email);
             return null;
         }
     }
+
     private User getUser(Long id) {
         User user = db.read(User.class, id);
         if (user != null) {
             return user;
         } else {
-            System.err.println("User not found : " + id);
+            LOG.error("User not found : " + id);
             return null;
         }
     }
+
     public Collection<User> getUsers() {
         return db.getAll(User.class);
     }
-    public void deleteUser(String email) {
-        if (emailIndex.containsKey(email)) {
-            db.delete(emailIndex.remove(email));
+
+    public Response deleteUser(Long id) {
+        Response response = new Response();
+        User user = getUser(id);
+        if (user != null) {
+            emailIndex.remove(user.getEmail());
+            db.delete(user);
+
+            response.setSuccess(Boolean.TRUE);
+            response.add(user);
+
         } else {
-            System.err.println("User not found : " + email);
+            response.setSuccess(Boolean.FALSE);
+            response.setMessage("User not found : " + id);
+
         }
+        return response;
     }
 
-
-    public Set getActivities(Long userId) {
-        Set<Activity> activities = new HashSet<Activity>();
-        User u = db.read(User.class, userId);
-        Collection<Long> c = u.getActivities();
-        for (Long actvId : c) {
-            activities.add(db.read(Activity.class, actvId));
-        }
-        return activities;
-    }
-
-    public Set getLocations(Long actvId) {
-        Set<Location> locations = new HashSet<Location>();
-        Activity a = db.read(Activity.class, actvId);
-        Collection<Long> c = a.getRoutes();
-        for (Long locId : c) {
-            locations.add(db.read(Location.class, locId));
-        }
-        return locations;
-    }
-
-    public Activity addActivity(Long userId, String type, String location, Double distance) {
-        Activity activity = db.edit(new Activity(type, location, distance));
+    public Response<Activity> addActivity(Long userId, String type, String location, Double distance) {
+        Response response = new Response();
         User user = getUser(userId);
-        user.addActivity(activity.getId());
-        return activity;
+        if (user != null) {
+            Activity activity = db.edit(new Activity(type, location, distance));
+            user.addActivity(activity.getId());
+            response.setSuccess(Boolean.TRUE);
+            response.add(activity);
+        } else {
+            response.setSuccess(Boolean.FALSE);
+            response.setMessage("User not found : " + userId);
+        }
+        return response;
     }
 
-    public Location addLocation(Long activityId, Integer latitude, Integer longitude) {
+    public Response getActivities(Long userId, String sortBy) {
+        Response response = new Response();
+        Response unsorted = getActivities(userId);
+        Comparator comparator = SortingUtils.getComparator(Activity.class, sortBy.toLowerCase());
+        if (comparator == null || !unsorted.getSuccess()) {
+            return unsorted;
+        } else  {
+           response.addAll(unsorted);
+           Collections.sort(response, comparator);
+           response.setSuccess(Boolean.TRUE);
+        }
+        return response;
+    }
+
+    public Response<Activity> getActivities(Long userId) {
+        Response response = new Response();
+        Collection<Activity> activities = new ArrayList<>();
+        User u = db.read(User.class, userId);
+        if (u != null) {
+            Collection<Long> c = u.getActivities();
+            for (Long actvId : c) {
+                activities.add(db.read(Activity.class, actvId));
+            }
+            response.setSuccess(Boolean.TRUE);
+            response.addAll(activities);
+        } else {
+            response.setSuccess(Boolean.FALSE);
+            response.setMessage("User not found : " + userId);
+        }
+        return response;
+    }
+
+    public Response<Location> addLocation(Long activityId, Integer latitude, Integer longitude) {
+        Response response = new Response();
         Activity activity = db.read(Activity.class, activityId);
         if (activity != null) {
             Location location = db.edit(new Location(latitude, longitude));
             activity.addRoute(location.getId());
-            return location;
+            response.setSuccess(Boolean.TRUE);
+            response.add(location);
+        } else {
+            response.setSuccess(Boolean.FALSE);
+            response.setMessage("Activity not found : " + activityId);
         }
-        LOG.error("Unknown activity " + activityId);
-        return null;
+        return response;
+    }
 
+    public Response<Location> getLocations(Long actvId) {
+        Response response = new Response();
+        Collection<Location> locations = new ArrayList<>();
+        Activity a = db.read(Activity.class, actvId);
+        if (a != null) {
+            Collection<Long> c = a.getRoutes();
+            for (Long locId : c) {
+                locations.add(db.read(Location.class, locId));
+            }
+            response.setSuccess(Boolean.TRUE);
+            response.addAll(locations);
+        } else {
+            response.setSuccess(Boolean.FALSE);
+            response.setMessage("Activity not found : " + actvId);
+        }
+        return response;
     }
 
     // DB Operations
-    public void save() {
-        db.save();
+    public boolean save() {
+        return db.save();
     }
 
-    public void load() {
+    public boolean load() {
         if (db.load()) {
-            System.err.println("Loaded ok");
-        } else {
-            System.err.println("No data found");
+            rebuildUserIndex();
+            return true;
         }
-    }
+        return false;
 
-    public void reset() {
-        db.reset();
     }
 
     public void changeFormat(String format) {
         db.changeFormat(format);
     }
-
-    public void cleanUp() {db.cleanUp();}
 
 }

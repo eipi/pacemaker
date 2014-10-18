@@ -10,19 +10,14 @@ import java.io.FileWriter;
  */
 public class TextFile extends File {
 
-    private static final long serialVersionUID = 1L;
-    private boolean isNew = false;
+    private static final long serialVersionUID = 2L;
 
-    public TextFile(String pathname) {
+    public static TextFile at(String path) {
+        return new TextFile(path);
+    }
+
+    private TextFile(String pathname) {
         super(pathname);
-    }
-
-    public boolean isNew() {
-        return isNew;
-    }
-
-    public void setNew(boolean aNew) {
-        isNew = aNew;
     }
 
     public void write(String message) throws Exception {

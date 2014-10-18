@@ -2,8 +2,8 @@ package name.eipi.services.logger;
 
 import com.google.gson.Gson;
 import name.eipi.services.constants.LoggerConstants;
-import name.eipi.services.fileservice.FetchFileCmd;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import name.eipi.services.fileservice.TextFile;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -13,14 +13,23 @@ import java.util.Date;
  */
 public class LoggerImpl implements Logger {
 
-    private static final Calendar CALENDAR = Calendar.getInstance();
-
     private static final Gson Gsonisfier = new Gson();
 
     private final String className;
 
-    LoggerImpl(final Class clazz) {
+    private final String path;
+
+    private final String prefix;
+
+    private final boolean deleteOnExit;
+
+    private static final char PATH_SEP = '/';
+
+    LoggerImpl(final String path, final String prefix, final Class clazz, final boolean deleteOnExit) {
         className = clazz.getName();
+        this.path = validatePath(path);
+        this.prefix = prefix;
+        this.deleteOnExit = deleteOnExit;
     }
 
     private static String createLog(LoggerImpl logger, String message,
@@ -40,19 +49,16 @@ public class LoggerImpl implements Logger {
 
     }
 
-    private static String getPath() {
-        return LoggerFactory.getLogPath() + LoggerFactory.getAppName()
-                + LoggerConstants.DEBUG + CALENDAR.get(Calendar.YEAR)
-                + CALENDAR.get(Calendar.MONTH) + CALENDAR.get(Calendar.DATE);
-    }
-
     @Override
     public void debug(String message, Object object) {
 
         try {
-            FetchFileCmd.fetchTextFile(getPath()).write(
-                    createLog(this, message, object));
-
+            String filePath = buildPath(LoggerConstants.DEBUG);
+            String logMessage = createLog(this, message, object);
+            TextFile.at(filePath).write(logMessage);
+            if (deleteOnExit) {
+                TextFile.at(filePath).deleteOnExit();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -61,8 +67,12 @@ public class LoggerImpl implements Logger {
     @Override
     public void error(String message, Object object) {
         try {
-            FetchFileCmd.fetchTextFile(getPath()).write(
-                    createLog(this, message, object));
+            String filePath = buildPath(LoggerConstants.ERROR);
+            String errorMessage = createLog(this, message, object);
+            TextFile.at(filePath).write(errorMessage);
+            if (deleteOnExit) {
+                TextFile.at(filePath).deleteOnExit();
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -76,6 +86,20 @@ public class LoggerImpl implements Logger {
     @Override
     public void error(String message) {
         error(message, null);
+    }
+
+    private String validatePath(String logPath) {
+        if (logPath == null) {
+            return "";
+        } else {
+            return logPath + (PATH_SEP == logPath.charAt(logPath.length() - 1) ? "" : PATH_SEP);
+        }
+    }
+
+    private String buildPath(String logLevel) {
+        final Calendar CALENDAR = Calendar.getInstance();
+        return path + prefix + logLevel + CALENDAR.get(Calendar.YEAR)
+                + CALENDAR.get(Calendar.MONTH) + CALENDAR.get(Calendar.DATE);
     }
 
 }

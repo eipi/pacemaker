@@ -3,10 +3,10 @@ package name.eipi.pacemaker.views;
 import asg.cliche.Command;
 import asg.cliche.Param;
 import name.eipi.pacemaker.controllers.PacemakerAPI;
-import name.eipi.pacemaker.models.User;
-import name.eipi.pacemaker.util.Utilities;
+import name.eipi.pacemaker.controllers.Response;
+import name.eipi.pacemaker.util.StringUtils;
 
-import java.util.Collection;
+import java.io.PrintStream;
 
 /**
  * Created by dbdon_000 on 27/09/2014.
@@ -15,14 +15,18 @@ public class PacemakerUI {
 
     private final PacemakerAPI paceApi;
 
+    private final PrintStream out;
+    private final PrintStream err;
+
     public PacemakerUI(PacemakerAPI api) {
         paceApi = api;
+        out = System.out;
+        err = System.err;
     }
 
-    @Command(description = "Get all Users")
-    public void getUsers() {
-        Collection<User> users = paceApi.getUsers();
-        System.out.println(Utilities.toFancyString(users));
+    @Command(description = "List all Users")
+    public void listUsers() {
+        out.println(StringUtils.toFancyString(paceApi.getUsers()));
     }
 
     @Command(description = "Create a new User")
@@ -31,68 +35,109 @@ public class PacemakerUI {
             @Param(name = "last name") String lastName,
             @Param(name = "email") String email,
             @Param(name = "password") String password) {
-        paceApi.createUser(firstName, lastName, email, password);
+        Response response = paceApi.createUser(firstName, lastName, email, password);
+        if (response.getSuccess()) {
+            out.println("Created User\r\n" + StringUtils.toFancyString(response));
+        } else {
+            err.println(response.getMessage());
+        }
     }
 
     @Command(description = "Get User Details")
-    public void getUser(
+    public void listUser(
             @Param(name = "email") String email) {
-        User user = paceApi.getUserByEmail(email);
-        System.out.println(Utilities.toFancyString(user));
+        out.println((StringUtils.toFancyString(paceApi.getUserByEmail(email))));
     }
 
     @Command(description = "Delete a User")
     public void deleteUser(
-            @Param(name = "email") String email) {
-        paceApi.deleteUser(email);
+            @Param(name = "id") Long id) {
+        Response response = paceApi.deleteUser(id);
+        if (response.getSuccess()) {
+            out.println("Deleted User\r\n" + StringUtils.toFancyString(response));
+        } else {
+            err.println(response.getMessage());
+        }
+
     }
 
     @Command(description = "Add an Activity")
     public void addActivity(
-            @Param(name = "userId") Long userId,
+            @Param(name = "user-id") Long userId,
             @Param(name = "type") String type,
             @Param(name = "location") String location,
             @Param(name = "distance") Double distance) {
-
-        paceApi.addActivity(userId, type, location, distance);
+        Response response = paceApi.addActivity(userId, type, location, distance);
+        if (response.getSuccess()) {
+            out.println("Added activity to user " + userId + "\r\n" + StringUtils.toFancyString(response));
+        } else {
+            err.println(response.getMessage());
+        }
     }
 
-    @Command(description = "Get Activities for User")
-    public void getActivities(@Param(name = "user id") Long userId) {
-        paceApi.getActivities(userId);
+    @Command(description = "List all Activities for User")
+    public void listActivities(@Param(name = "user-id") Long userId) {
+        Response response = paceApi.getActivities(userId);
+        if (response.getSuccess()) {
+            out.println(StringUtils.toFancyString(response));
+        } else {
+            err.println(response.getMessage());
+        }
     }
 
-    @Command(description = "Get Locations for Activity")
-    public void getLocations(@Param(name = "activity id") Long activityId) {
-        paceApi.getLocations(activityId);
+
+    @Command(description = "List all Activities for User, sorted by specified field ascending")
+    public void listActivities(@Param(name = "user-id") Long userId,
+                               @Param(name = "sortBy: type, location, distance, date, duration") String sortBy) {
+        Response response = paceApi.getActivities(userId, sortBy);
+        if (response.getSuccess()) {
+            out.println(StringUtils.toFancyString(response));
+        } else {
+            err.println(response.getMessage());
+        }
+    }
+
+
+    @Command(description = "List all Locations for Activity")
+    public void listLocations(@Param(name = "activity-id") Long activityId) {
+        out.println(StringUtils.toFancyString(paceApi.getLocations(activityId)));
     }
 
     @Command(description = "Add a Location")
     public void addLocation(
-            @Param(name = "activityId") Long activityId,
+            @Param(name = "activit-id") Long activityId,
             @Param(name = "latitude") Integer latitude,
             @Param(name = "longitude") Integer longitude) {
-
-        paceApi.addLocation(activityId, latitude, longitude);
+        Response response = paceApi.addLocation(activityId, latitude, longitude);
+        if (response.getSuccess()) {
+            out.println("Added location to activity " + activityId + "\r\n" + StringUtils.toFancyString(response));
+        } else {
+            err.println(response.getMessage());
+        }
     }
 
     @Command(description = "Save all changes")
-    public void save() {
-        paceApi.save();
+    public void store() {
+        if (paceApi.save()) {
+            out.println("Saved ok.");
+        } else {
+            err.println("Error saving changes. Please check configuration and try again.");
+        }
+
     }
 
     @Command(description = "Load data from disk")
     public void load() {
-        paceApi.load();
-    }
+        if (paceApi.load()) {
+                out.println("Loaded ok");
+            } else {
+                err.println("Error loading data. Please check configuration and try again.");
+            }
 
-    @Command(description = "Reset all")
-    public void reset() {
-        paceApi.reset();
     }
 
     @Command(description = "Change file format")
-    public void changeFileFormat(@Param(name = "format") String format) {
+    public void changeFileFormat(@Param(name = "file format: xml, json, sql") String format) {
         paceApi.changeFormat(format);
     }
 

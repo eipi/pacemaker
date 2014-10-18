@@ -5,7 +5,7 @@ package name.eipi.pacemaker.persistence;
  */
 public interface IDataBaser {
 
-    void write(Object o);
+    boolean write(Object o);
 
     Object read();
 

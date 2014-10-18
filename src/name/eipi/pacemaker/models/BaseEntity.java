@@ -6,6 +6,10 @@ import java.lang.reflect.Field;
 
 public abstract class BaseEntity {
 
+    /**
+     * Classes extending BaseEntity have a unique Long id for PK.
+     *
+     */
     private Long id;
 
     public Long getId() {

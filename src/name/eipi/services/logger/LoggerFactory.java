@@ -1,42 +1,31 @@
 package name.eipi.services.logger;
 
+import java.util.Calendar;
+
 /**
  * Created by dbdon_000 Date: 10/08/13
  */
 public class LoggerFactory {
 
-    private static final char PATH_SEP = '/';
-    private static String LOG_PATH = "logs/";
-    private static String APP_NAME = "Pacemaker";
+    // TODO move to props file
+    private static String PATH = "logs/";
+    private static String PREFIX = "Pacemaker";
+
+
+    private static boolean DELETE_ON_EXIT;
 
     private LoggerFactory() {
         // no
     }
 
+    public static void setTestMode(Boolean isTest) {
+        DELETE_ON_EXIT = isTest;
+        PREFIX += "Test";
+    }
+
     public static Logger getInstance(final Class clazz) {
-        return new LoggerImpl(clazz);
+        return new LoggerImpl(PATH, PREFIX, clazz, DELETE_ON_EXIT);
     }
 
-    public static String getLogPath() {
-
-        return LOG_PATH;
-    }
-
-    public static void setLogPath(String logPath) {
-        if (logPath == null) {
-            LOG_PATH = "";
-        } else {
-            LOG_PATH = logPath
-                    + (PATH_SEP == logPath.charAt(LOG_PATH.length() - 1) ? "" : PATH_SEP);
-        }
-    }
-
-    public static String getAppName() {
-        return APP_NAME;
-    }
-
-    public static void setAppName(String appName) {
-        APP_NAME = appName;
-    }
 
 }

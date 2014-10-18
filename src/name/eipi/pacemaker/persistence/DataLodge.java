@@ -8,7 +8,8 @@ import name.eipi.services.logger.LoggerFactory;
 import java.util.*;
 
 /**
- * Class to perform data operations on Entities. Uses a Databaser to manage data persistence.
+ * Class to perform data operations on Entities.
+ * Uses an IDatabaser implementation to manage data persistence.
  *
  * @author naysayer
  */
@@ -50,15 +51,6 @@ public class DataLodge {
         }
     }
 
-    public boolean load() {
-        Object obj = db.read();
-        if (obj != null && obj instanceof Map) {
-            workingMemory = (Map) obj;
-            return true;
-        }
-        return false;
-    }
-
     public void reset() {
         workingMemory = new HashMap<>();
 
@@ -92,7 +84,6 @@ public class DataLodge {
                 return (T) data.get(id);
             }
         }
-        // not sure yet about this, continue use of optionals?
         return null;
     }
 
@@ -134,17 +125,22 @@ public class DataLodge {
 
 
     // BEGIN FILE OPS
-    public void save() {
-        db.write(workingMemory);
+    public boolean load() {
+        Object obj = db.read();
+        if (obj != null && obj instanceof Map) {
+            workingMemory = (Map) obj;
+            return true;
+        }
+        return false;
     }
 
-    public void cleanUp() {
-        db.cleanUp();
+    public boolean save() {
+        return db.write(workingMemory);
     }
-
 
     public void changeFormat(String format) {
         db.changeFormat(format);
+        db.write(workingMemory);
     }
 
     // END FILE OPS
