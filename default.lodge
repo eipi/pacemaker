@@ -1,0 +1,92 @@
+<object-stream>
+  <map>
+    <entry>
+      <string>name.eipi.pacemaker.models.Activity</string>
+      <map>
+        <entry>
+          <long>1</long>
+          <name.eipi.pacemaker.models.Activity>
+            <id>1</id>
+            <type>1</type>
+            <location>1</location>
+            <distance>1.0</distance>
+            <routes class="list"/>
+          </name.eipi.pacemaker.models.Activity>
+        </entry>
+        <entry>
+          <long>2</long>
+          <name.eipi.pacemaker.models.Activity>
+            <id>2</id>
+            <type>2</type>
+            <location>3</location>
+            <distance>4.0</distance>
+            <routes class="list"/>
+          </name.eipi.pacemaker.models.Activity>
+        </entry>
+        <entry>
+          <long>3</long>
+          <name.eipi.pacemaker.models.Activity>
+            <id>3</id>
+            <type>2</type>
+            <location>3</location>
+            <distance>4.0</distance>
+            <routes class="list"/>
+          </name.eipi.pacemaker.models.Activity>
+        </entry>
+      </map>
+    </entry>
+    <entry>
+      <string>name.eipi.pacemaker.models.User</string>
+      <map>
+        <entry>
+          <long>1</long>
+          <name.eipi.pacemaker.models.User>
+            <id>1</id>
+            <firstName>a</firstName>
+            <lastName>s</lastName>
+            <email>d</email>
+            <password>f</password>
+            <activities class="list">
+              <long>1</long>
+              <long>2</long>
+              <long>3</long>
+            </activities>
+          </name.eipi.pacemaker.models.User>
+        </entry>
+        <entry>
+          <long>2</long>
+          <name.eipi.pacemaker.models.User>
+            <id>2</id>
+            <firstName>1234</firstName>
+            <lastName>2345</lastName>
+            <email>3456</email>
+            <password>4567</password>
+            <activities class="list"/>
+          </name.eipi.pacemaker.models.User>
+        </entry>
+        <entry>
+          <long>3</long>
+          <name.eipi.pacemaker.models.User>
+            <id>3</id>
+            <firstName>1</firstName>
+            <lastName>2</lastName>
+            <email>3</email>
+            <password>4</password>
+            <activities class="list"/>
+          </name.eipi.pacemaker.models.User>
+        </entry>
+        <entry>
+          <long>4</long>
+          <name.eipi.pacemaker.models.User>
+            <id>4</id>
+            <firstName>1</firstName>
+            <lastName>2</lastName>
+            <email>3</email>
+            <password>4</password>
+            <activities class="list"/>
+          </name.eipi.pacemaker.models.User>
+        </entry>
+      </map>
+    </entry>
+  </map>
+</object-stream>

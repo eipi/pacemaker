@@ -59,11 +59,11 @@ public class DataBaserXStreamImpl implements IDataBaser {
     }
 
     @Override
-    public void toggleFormat() {
+    public void changeFormat(String format) {
         // TODO a better way?
-        if (fmt == Format.Json) {
+        if ("xml".equalsIgnoreCase(format)) {
             fmt = Format.Xml;
-        } else if (fmt == Format.Xml) {
+        } else if ("json".equalsIgnoreCase(format)) {
             fmt = Format.Json;
         }
         initializeXstream();

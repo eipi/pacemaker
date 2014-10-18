@@ -3,7 +3,7 @@ package name.eipi.services.logger;
 import com.google.gson.Gson;
 import name.eipi.services.constants.LoggerConstants;
 import name.eipi.services.fileservice.FetchFileCmd;
-import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import java.util.Calendar;
 import java.util.Date;

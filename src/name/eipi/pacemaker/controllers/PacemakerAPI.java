@@ -123,8 +123,8 @@ public class PacemakerAPI {
         db.reset();
     }
 
-    public void toggleFormat() {
-        db.toggleFormat();
+    public void changeFormat(String format) {
+        db.changeFormat(format);
     }
 
     public void cleanUp() {db.cleanUp();}

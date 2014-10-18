@@ -16,7 +16,7 @@ public class DataLodgeTest {
         User user = new User("Banana", "Joe", "abc", "etc");
         DataLodge db = new DataLodge("datalodge.test");
         // defaults to json, changing to xml
-        db.toggleFormat();
+        db.changeFormat("xml");
         User u = db.edit(user);
         assertFalse(u.getId() == null);
         db.save();

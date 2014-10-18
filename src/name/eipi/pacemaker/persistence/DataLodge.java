@@ -143,8 +143,8 @@ public class DataLodge {
     }
 
 
-    public void toggleFormat() {
-        db.toggleFormat();
+    public void changeFormat(String format) {
+        db.changeFormat(format);
     }
 
     // END FILE OPS
