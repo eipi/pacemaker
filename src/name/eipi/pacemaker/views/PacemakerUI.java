@@ -66,8 +66,10 @@ public class PacemakerUI {
             @Param(name = "user-id") Long userId,
             @Param(name = "type") String type,
             @Param(name = "location") String location,
-            @Param(name = "distance") Double distance) {
-        Response response = paceApi.addActivity(userId, type, location, distance);
+            @Param(name = "distance") Double distance,
+            @Param(name = "start-time") String startTime,
+            @Param(name = "duration") String duration) {
+        Response response = paceApi.addActivity(userId, type, location, distance, startTime, duration);
         if (response.getSuccess()) {
             out.println("Added activity to user " + userId + "\r\n" + StringUtils.toFancyString(response));
         } else {

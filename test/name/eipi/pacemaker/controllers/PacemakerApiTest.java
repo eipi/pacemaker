@@ -8,6 +8,9 @@ import org.junit.*;
 import org.junit.Test;
 
 
+import java.util.Calendar;
+import java.util.Date;
+
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -50,7 +53,7 @@ public class PacemakerApiTest {
         assertTrue(api.getUsers().contains(you));
         assertTrue(me.equals(api.getUserByEmail(email)));
         assertFalse(you.equals(api.getUserByEmail(email)));
-        Activity activity = api.addActivity(me.getId(), "Run", "Beach", 10.0).value();
+        Activity activity = api.addActivity(me.getId(), "Run", "Beach", 10.0, new Date().toString(), "1").value();
         assertNotNull(activity.getId());
         assertTrue(api.getActivities(me.getId()).contains(activity));
         Location location = api.addLocation(activity.getId(), 1, 1).value();

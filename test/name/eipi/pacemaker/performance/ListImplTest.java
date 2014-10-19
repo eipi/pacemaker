@@ -51,6 +51,7 @@ public class ListImplTest extends TestCase {
                 / numTests + ", Read : " + arrayListReadTime / numTests);
         System.out.println("LinkedList :: Write : " + linkedListWriteTime
                 / numTests + ", Read : " + linkedListReadTime / numTests);
+        assertTrue(arrayListReadTime < linkedListReadTime);
     }
 
     public long[] implTest(Collection<User> collectionImpl) {

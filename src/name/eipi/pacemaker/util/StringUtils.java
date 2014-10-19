@@ -33,7 +33,7 @@ public class StringUtils {
         if (coll == null || coll.isEmpty() || (coll.size() == 1 && coll.iterator().next() == null)) {
             return NULL;
         }
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(CR);
         try {
             Collection<Collection<Element>> elements = new ArrayList<Collection<Element>>();
             List<Method> display = applyCustomOrderingAndFiltering(coll.iterator().next());
@@ -167,8 +167,7 @@ public class StringUtils {
                 list.add(methodIndex.get(field));
             }
         } else if (t instanceof Activity) {
-            final String[] fields = {"Type", "Location", "Distance", "Routes"
-                    /*"StartTime", "Duration" */ };
+            final String[] fields = {"Type", "Location", "Distance", "Routes", "StartTime", "Duration" };
             for (String field : fields) {
                 list.add(methodIndex.get(field));
             }

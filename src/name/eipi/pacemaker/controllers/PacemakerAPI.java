@@ -7,6 +7,10 @@ import name.eipi.pacemaker.persistence.DataLodge;
 import name.eipi.pacemaker.util.SortingUtils;
 import name.eipi.services.logger.Logger;
 import name.eipi.services.logger.LoggerFactory;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
 
 import java.util.*;
 
@@ -96,11 +100,22 @@ public class PacemakerAPI {
         return response;
     }
 
-    public Response<Activity> addActivity(Long userId, String type, String location, Double distance) {
+    public Response<Activity> addActivity(Long userId, String type, String location, Double distance, String startTime, String duration) {
         Response response = new Response();
         User user = getUser(userId);
         if (user != null) {
-            Activity activity = db.edit(new Activity(type, location, distance));
+            Activity activity = new Activity(type, location, distance);
+            DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+            activity.setStartTime(fmt.parseDateTime(startTime));
+            PeriodFormatter hoursMinutesSeconds= new PeriodFormatterBuilder()
+                    .appendHours()
+                    .appendSeparator(":")
+                    .appendMinutes()
+                    .appendSeparator(":")
+                    .appendSeconds()
+                    .toFormatter();
+            activity.setDuration(hoursMinutesSeconds.parsePeriod(duration).toStandardDuration());
+            activity = db.edit(activity);
             user.addActivity(activity.getId());
             response.setSuccess(Boolean.TRUE);
             response.add(activity);
