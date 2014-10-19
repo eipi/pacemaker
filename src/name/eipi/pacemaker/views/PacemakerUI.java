@@ -137,7 +137,7 @@ public class PacemakerUI {
     }
 
     @Command(description = "Change file format")
-    public void changeFileFormat(@Param(name = "file format: xml, json, sql") String format) {
+    public void changeFileFormat(@Param(name = "file format: xml, json") String format) {
         paceApi.changeFormat(format);
     }
 
