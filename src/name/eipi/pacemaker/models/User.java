@@ -3,21 +3,25 @@ package name.eipi.pacemaker.models;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class User extends BaseEntity {
 
-    @Getter @Setter
-    private String firstName;
-    @Getter @Setter
-    private String lastName;
-    @Getter @Setter
-    private String email;
-    @Getter @Setter
-    private String password;
     @Getter
-    private Collection<Long> activities;
+    @Setter
+    protected String firstName;
+    @Getter
+    @Setter
+    protected String lastName;
+    @Getter
+    @Setter
+    protected String email;
+    @Getter
+    @Setter
+    protected String password;
+    @Getter
+    protected Collection<Long> activities;
 
 
     /**

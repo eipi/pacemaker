@@ -48,23 +48,23 @@ public class StringUtils {
                     Integer horizBorder = 1;
                     for (Method m : display) {
                         String fieldName = m.getName().substring(GET.length());
-                            Object value = m.invoke(t);
-                            Integer nameLength = fieldName.length();
-                            Integer valLength = value == null ? 0 : value.toString().length();
-                            Integer maxLength = nameLength >= valLength ? nameLength : valLength;
-                            maxLength += PAD;
+                        Object value = m.invoke(t);
+                        Integer nameLength = fieldName.length();
+                        Integer valLength = value == null ? 0 : value.toString().length();
+                        Integer maxLength = nameLength >= valLength ? nameLength : valLength;
+                        maxLength += PAD;
                         if (maxLengthsMap.containsKey(fieldName)) {
-                                if (maxLength > maxLengthsMap.get(fieldName)) {
-                                    maxLengthsMap.put(fieldName, maxLength);
-
-                                } else {
-                                    maxLength = maxLengthsMap.get(fieldName);
-                                }
-                            } else {
+                            if (maxLength > maxLengthsMap.get(fieldName)) {
                                 maxLengthsMap.put(fieldName, maxLength);
+
+                            } else {
+                                maxLength = maxLengthsMap.get(fieldName);
                             }
-                            fields.add(new Element(fieldName, value == null ? "" : value.toString(), null));
-                            horizBorder += maxLength + 1;
+                        } else {
+                            maxLengthsMap.put(fieldName, maxLength);
+                        }
+                        fields.add(new Element(fieldName, value == null ? "" : value.toString(), null));
+                        horizBorder += maxLength + 1;
 
                     }
                     maxHorizBorder = horizBorder > maxHorizBorder ? horizBorder : maxHorizBorder;
@@ -106,7 +106,6 @@ public class StringUtils {
 
     /**
      * Convenience method for single objects.
-     *
      */
     public static <T extends BaseEntity> String toFancyString(T obj) {
         Collection<T> c = new ArrayList<>();
@@ -145,7 +144,7 @@ public class StringUtils {
 
     private static <T extends BaseEntity> List<Method> applyCustomOrderingAndFiltering(T t) {
 
-        List<Method> list  = new ArrayList<>();
+        List<Method> list = new ArrayList<>();
 
         Method[] classMethods = t.getClass().getMethods();
         Map<String, Method> methodIndex = new HashMap<>();
@@ -167,7 +166,7 @@ public class StringUtils {
                 list.add(methodIndex.get(field));
             }
         } else if (t instanceof Activity) {
-            final String[] fields = {"Type", "Location", "Distance", "Routes", "StartTime", "Duration" };
+            final String[] fields = {"Type", "Location", "Distance", "Routes", "StartTime", "Duration"};
             for (String field : fields) {
                 list.add(methodIndex.get(field));
             }
@@ -183,7 +182,6 @@ public class StringUtils {
     }
 
 }
-
 
 
 class Element {

@@ -5,24 +5,28 @@ import lombok.Setter;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 
-import java.util.Collection;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 public class Activity extends BaseEntity {
 
-    @Getter @Setter
-    private String type;
-    @Getter @Setter
-    private String location;
-    @Getter @Setter
-    private double distance;
     @Getter
-    private Collection<Long> routes;
-    @Getter @Setter
-    private DateTime startTime;
-    @Getter @Setter
-    private Duration duration;
+    @Setter
+    protected String type;
+    @Getter
+    @Setter
+    protected String location;
+    @Getter
+    @Setter
+    protected double distance;
+    @Getter
+    protected Collection<Long> routes;
+    @Getter
+    @Setter
+    protected DateTime startTime;
+    @Getter
+    @Setter
+    protected Duration duration;
 
     /**
      * No default constructor, just this.

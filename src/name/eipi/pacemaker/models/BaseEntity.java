@@ -8,7 +8,6 @@ public abstract class BaseEntity {
 
     /**
      * Classes extending BaseEntity have a unique Long id for PK.
-     *
      */
     private Long id;
 
@@ -58,9 +57,9 @@ public abstract class BaseEntity {
                     Object thisValue = f.get(this);
                     Object thatValue = f.get(obj);
 
-                    if (thisValue.equals(thatValue)) {
+                    if (thisValue == thatValue || (thisValue != null && thisValue.equals(thatValue))) {
                         continue;
-                    } else if (thisValue != null && !thisValue.equals(thatValue)) {
+                    } else {
                         return false;
                     }
                 }

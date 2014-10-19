@@ -12,7 +12,4 @@ public interface IDataBaser {
     // Should be in interface? Kind of Impl specific.
     void changeFormat(String format);
 
-    // Should be in interface? Kind of Impl specific.
-    void cleanUp();
-
 }

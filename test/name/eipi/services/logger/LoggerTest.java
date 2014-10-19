@@ -1,8 +1,5 @@
 package name.eipi.services.logger;
 
-import name.eipi.services.constants.LoggerConstants;
-import name.eipi.services.fileservice.TextFile;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 

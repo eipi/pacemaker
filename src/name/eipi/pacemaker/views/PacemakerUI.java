@@ -2,8 +2,8 @@ package name.eipi.pacemaker.views;
 
 import asg.cliche.Command;
 import asg.cliche.Param;
+import name.eipi.pacemaker.controllers.APIResponse;
 import name.eipi.pacemaker.controllers.PacemakerAPI;
-import name.eipi.pacemaker.controllers.Response;
 import name.eipi.pacemaker.util.StringUtils;
 
 import java.io.PrintStream;
@@ -35,8 +35,8 @@ public class PacemakerUI {
             @Param(name = "last name") String lastName,
             @Param(name = "email") String email,
             @Param(name = "password") String password) {
-        Response response = paceApi.createUser(firstName, lastName, email, password);
-        if (response.getSuccess()) {
+        APIResponse response = paceApi.createUser(firstName, lastName, email, password);
+        if (response.isSuccess()) {
             out.println("Created User\r\n" + StringUtils.toFancyString(response));
         } else {
             err.println(response.getMessage());
@@ -52,8 +52,8 @@ public class PacemakerUI {
     @Command(description = "Delete a User")
     public void deleteUser(
             @Param(name = "id") Long id) {
-        Response response = paceApi.deleteUser(id);
-        if (response.getSuccess()) {
+        APIResponse response = paceApi.deleteUser(id);
+        if (response.isSuccess()) {
             out.println("Deleted User\r\n" + StringUtils.toFancyString(response));
         } else {
             err.println(response.getMessage());
@@ -69,8 +69,8 @@ public class PacemakerUI {
             @Param(name = "distance") Double distance,
             @Param(name = "start-time") String startTime,
             @Param(name = "duration") String duration) {
-        Response response = paceApi.addActivity(userId, type, location, distance, startTime, duration);
-        if (response.getSuccess()) {
+        APIResponse response = paceApi.addActivity(userId, type, location, distance, startTime, duration);
+        if (response.isSuccess()) {
             out.println("Added activity to user " + userId + "\r\n" + StringUtils.toFancyString(response));
         } else {
             err.println(response.getMessage());
@@ -79,8 +79,8 @@ public class PacemakerUI {
 
     @Command(description = "List all Activities for User")
     public void listActivities(@Param(name = "user-id") Long userId) {
-        Response response = paceApi.getActivities(userId);
-        if (response.getSuccess()) {
+        APIResponse response = paceApi.getActivities(userId);
+        if (response.isSuccess()) {
             out.println(StringUtils.toFancyString(response));
         } else {
             err.println(response.getMessage());
@@ -91,8 +91,8 @@ public class PacemakerUI {
     @Command(description = "List all Activities for User, sorted by specified field ascending")
     public void listActivities(@Param(name = "user-id") Long userId,
                                @Param(name = "sortBy: type, location, distance, date, duration") String sortBy) {
-        Response response = paceApi.getActivities(userId, sortBy);
-        if (response.getSuccess()) {
+        APIResponse response = paceApi.getActivities(userId, sortBy);
+        if (response.isSuccess()) {
             out.println(StringUtils.toFancyString(response));
         } else {
             err.println(response.getMessage());
@@ -110,8 +110,8 @@ public class PacemakerUI {
             @Param(name = "activit-id") Long activityId,
             @Param(name = "latitude") Integer latitude,
             @Param(name = "longitude") Integer longitude) {
-        Response response = paceApi.addLocation(activityId, latitude, longitude);
-        if (response.getSuccess()) {
+        APIResponse response = paceApi.addLocation(activityId, latitude, longitude);
+        if (response.isSuccess()) {
             out.println("Added location to activity " + activityId + "\r\n" + StringUtils.toFancyString(response));
         } else {
             err.println(response.getMessage());
@@ -131,10 +131,10 @@ public class PacemakerUI {
     @Command(description = "Load data from disk")
     public void load() {
         if (paceApi.load()) {
-                out.println("Loaded ok");
-            } else {
-                err.println("Error loading data. Please check configuration and try again.");
-            }
+            out.println("Loaded ok");
+        } else {
+            err.println("Error loading data. Please check configuration and try again.");
+        }
 
     }
 

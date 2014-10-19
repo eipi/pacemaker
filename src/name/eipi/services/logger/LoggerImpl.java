@@ -14,16 +14,11 @@ import java.util.Date;
 public class LoggerImpl implements Logger {
 
     private static final Gson Gsonisfier = new Gson();
-
-    private final String className;
-
-    private final String path;
-
-    private final String prefix;
-
-    private final boolean deleteOnExit;
-
     private static final char PATH_SEP = '/';
+    private final String className;
+    private final String path;
+    private final String prefix;
+    private final boolean deleteOnExit;
 
     LoggerImpl(final String path, final String prefix, final Class clazz, final boolean deleteOnExit) {
         className = clazz.getName();

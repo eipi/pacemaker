@@ -1,28 +1,33 @@
 package name.eipi.pacemaker.controllers;
 
 import name.eipi.pacemaker.models.Activity;
+import name.eipi.pacemaker.models.BaseEntity;
 import name.eipi.pacemaker.models.Location;
 import name.eipi.pacemaker.models.User;
 import name.eipi.pacemaker.persistence.DataLodge;
+import name.eipi.pacemaker.util.DateTimeUtils;
 import name.eipi.pacemaker.util.SortingUtils;
 import name.eipi.services.logger.Logger;
 import name.eipi.services.logger.LoggerFactory;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
 
 import java.util.*;
 
 public class PacemakerAPI {
 
-    /** Logger. */
+    /**
+     * Logger.
+     */
     private static final Logger LOG = LoggerFactory.getInstance(PacemakerAPI.class);
 
-    /** Manages read and write operations for objects extending BaseEntity. */
+    /**
+     * Manages read and write operations for objects extending BaseEntity.
+     */
     private final DataLodge db;
 
-    /** A convenience index of users by email. Allows quick lookup and validation. */
+    /**
+     * A convenience index of users by email. Allows quick lookup and validation.
+     * Needs to be build on load/reload, and updated when users are added/deleted.
+     */
     private Map<String, User> emailIndex = new HashMap<>();
 
     public PacemakerAPI() {
@@ -31,7 +36,7 @@ public class PacemakerAPI {
     }
 
     public PacemakerAPI(String fileName) {
-        db =  new DataLodge(fileName);
+        db = new DataLodge(fileName);
         rebuildUserIndex();
     }
 
@@ -44,15 +49,23 @@ public class PacemakerAPI {
     }
 
     // User operations
-    public Response<User> createUser(String firstName, String lastName, String email, String password) {
-        Response response = new Response();
-        if (emailIndex.containsKey(email)) {
+    public APIResponse<User> createUser(String firstName, String lastName, String email, String password) {
+        User user = new User(firstName, lastName, email, password);
+        return createUser(user);
+    }
+
+    /**
+     * Convenience method for above
+     */
+    public APIResponse<User> createUser(User user) {
+        APIResponse response = new APIResponse();
+        if (emailIndex.containsKey(user.getEmail())) {
             response.setSuccess(Boolean.FALSE);
             response.setMessage("This email is already registered.");
-            LOG.error("User already exists : " + email);
+            LOG.error("User already exists : " + user.getEmail());
         } else {
-            User user = db.edit(new User(firstName, lastName, email, password));
-            emailIndex.put(email, user);
+            user = db.edit(user);
+            emailIndex.put(user.getEmail(), user);
             response.setSuccess(Boolean.TRUE);
             response.add(user);
         }
@@ -68,7 +81,7 @@ public class PacemakerAPI {
         }
     }
 
-    private User getUser(Long id) {
+    public User getUser(Long id) {
         User user = db.read(User.class, id);
         if (user != null) {
             return user;
@@ -82,11 +95,33 @@ public class PacemakerAPI {
         return db.getAll(User.class);
     }
 
-    public Response deleteUser(Long id) {
-        Response response = new Response();
+    /**
+     * For testing purposes only.
+     *
+     * @param clazz
+     * @return
+     */
+    protected Collection<? extends BaseEntity> getAll(Class clazz) {
+        return db.getAll(clazz);
+    }
+
+    public APIResponse deleteUser(Long id) {
+        APIResponse response = new APIResponse();
         User user = getUser(id);
         if (user != null) {
             emailIndex.remove(user.getEmail());
+            // First delete all children.
+            for (Long actvId : user.getActivities()) {
+                Activity activity = db.read(Activity.class, actvId);
+                if (activity != null) {
+                    for (Long locId : activity.getRoutes()) {
+                        Location location = db.read(Location.class, locId);
+                        db.delete(location);
+                    }
+                    db.delete(activity);
+                }
+            }
+
             db.delete(user);
 
             response.setSuccess(Boolean.TRUE);
@@ -100,21 +135,10 @@ public class PacemakerAPI {
         return response;
     }
 
-    public Response<Activity> addActivity(Long userId, String type, String location, Double distance, String startTime, String duration) {
-        Response response = new Response();
+    public APIResponse<Activity> addActivity(Long userId, Activity activity) {
+        APIResponse response = new APIResponse();
         User user = getUser(userId);
         if (user != null) {
-            Activity activity = new Activity(type, location, distance);
-            DateTimeFormatter fmt = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
-            activity.setStartTime(fmt.parseDateTime(startTime));
-            PeriodFormatter hoursMinutesSeconds= new PeriodFormatterBuilder()
-                    .appendHours()
-                    .appendSeparator(":")
-                    .appendMinutes()
-                    .appendSeparator(":")
-                    .appendSeconds()
-                    .toFormatter();
-            activity.setDuration(hoursMinutesSeconds.parsePeriod(duration).toStandardDuration());
             activity = db.edit(activity);
             user.addActivity(activity.getId());
             response.setSuccess(Boolean.TRUE);
@@ -126,22 +150,29 @@ public class PacemakerAPI {
         return response;
     }
 
-    public Response getActivities(Long userId, String sortBy) {
-        Response response = new Response();
-        Response unsorted = getActivities(userId);
+    public APIResponse<Activity> addActivity(Long userId, String type, String location, Double distance, String startTime, String duration) {
+        Activity activity = new Activity(type, location, distance);
+        activity.setStartTime(DateTimeUtils.parseDateTime(startTime));
+        activity.setDuration(DateTimeUtils.parseDuration(duration));
+        return addActivity(userId, activity);
+    }
+
+    public APIResponse getActivities(Long userId, String sortBy) {
+        APIResponse response = new APIResponse();
+        APIResponse unsorted = getActivities(userId);
         Comparator comparator = SortingUtils.getComparator(Activity.class, sortBy.toLowerCase());
-        if (comparator == null || !unsorted.getSuccess()) {
+        if (comparator == null || !unsorted.isSuccess()) {
             return unsorted;
-        } else  {
-           response.addAll(unsorted);
-           Collections.sort(response, comparator);
-           response.setSuccess(Boolean.TRUE);
+        } else {
+            response.addAll(unsorted);
+            Collections.sort(response, comparator);
+            response.setSuccess(Boolean.TRUE);
         }
         return response;
     }
 
-    public Response<Activity> getActivities(Long userId) {
-        Response response = new Response();
+    public APIResponse<Activity> getActivities(Long userId) {
+        APIResponse response = new APIResponse();
         Collection<Activity> activities = new ArrayList<>();
         User u = db.read(User.class, userId);
         if (u != null) {
@@ -158,11 +189,16 @@ public class PacemakerAPI {
         return response;
     }
 
-    public Response<Location> addLocation(Long activityId, Integer latitude, Integer longitude) {
-        Response response = new Response();
+    public APIResponse<Location> addLocation(Long activityId, Integer latitude, Integer longitude) {
+        Location location = new Location(latitude, longitude);
+        return addLocation(activityId, location);
+    }
+
+    public APIResponse<Location> addLocation(Long activityId, Location location) {
+        APIResponse response = new APIResponse();
         Activity activity = db.read(Activity.class, activityId);
         if (activity != null) {
-            Location location = db.edit(new Location(latitude, longitude));
+            location = db.edit(location);
             activity.addRoute(location.getId());
             response.setSuccess(Boolean.TRUE);
             response.add(location);
@@ -173,8 +209,8 @@ public class PacemakerAPI {
         return response;
     }
 
-    public Response<Location> getLocations(Long actvId) {
-        Response response = new Response();
+    public APIResponse<Location> getLocations(Long actvId) {
+        APIResponse response = new APIResponse();
         Collection<Location> locations = new ArrayList<>();
         Activity a = db.read(Activity.class, actvId);
         if (a != null) {

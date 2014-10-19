@@ -12,12 +12,12 @@ public class TextFile extends File {
 
     private static final long serialVersionUID = 2L;
 
-    public static TextFile at(String path) {
-        return new TextFile(path);
-    }
-
     private TextFile(String pathname) {
         super(pathname);
+    }
+
+    public static TextFile at(String path) {
+        return new TextFile(path);
     }
 
     public void write(String message) throws Exception {

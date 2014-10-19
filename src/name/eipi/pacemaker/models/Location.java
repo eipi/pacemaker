@@ -5,10 +5,12 @@ import lombok.Setter;
 
 public class Location extends BaseEntity {
 
-    @Getter @Setter
-    private int latitude;
-    @Getter @Setter
-    private int longitude;
+    @Getter
+    @Setter
+    protected int latitude;
+    @Getter
+    @Setter
+    protected int longitude;
 
     /**
      * No default, just this.

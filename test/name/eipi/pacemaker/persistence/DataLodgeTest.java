@@ -1,13 +1,13 @@
 package name.eipi.pacemaker.persistence;
 
+import name.eipi.pacemaker.BaseTestPacemaker;
 import name.eipi.pacemaker.models.User;
-import name.eipi.pacemaker.persistence.DataLodge;
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 
-public class DataLodgeTest {
+public class DataLodgeTest extends BaseTestPacemaker {
 
     @Test
     public void testIO() throws Exception {

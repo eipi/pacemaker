@@ -11,7 +11,6 @@ import name.eipi.services.logger.Logger;
 import name.eipi.services.logger.LoggerFactory;
 
 import java.io.*;
-import java.util.Map;
 
 /**
  * Class to save an Object to and from disk/db/etc.
@@ -20,25 +19,10 @@ import java.util.Map;
  */
 public class DataBaserXStreamImpl implements IDataBaser {
 
-    public static boolean DELETE_ON_EXIT = Boolean.FALSE;
-
-    private enum Format {
-        Json(new JettisonMappedXmlDriver()), Xml(new DomDriver());
-        final AbstractDriver driver;
-
-        Format(AbstractDriver drv) {
-            this.driver = drv;
-        }
-    }
-
-    private boolean pendingDelete;
-
     private static final Logger LOG = LoggerFactory.getInstance(DataBaserXStreamImpl.class);
-
+    public static boolean DELETE_ON_EXIT = Boolean.FALSE;
     private String connString = "default.lodge";
-
     private XStream xstream = null;
-
     // Defaulting to JSON.
     private Format fmt = Format.Json;
 
@@ -92,16 +76,6 @@ public class DataBaserXStreamImpl implements IDataBaser {
     }
 
     @Override
-    public void cleanUp() {
-        deleteFile();
-    }
-
-    boolean deleteFile() {
-        File file = new File(connString);
-        return file.delete();
-    }
-
-    @Override
     public Object read() {
 
         File file = new File(connString);
@@ -122,8 +96,7 @@ public class DataBaserXStreamImpl implements IDataBaser {
                 }
             } catch (Exception ex) {
                 LOG.error(ex.getMessage(), ex);
-            }
-            finally {
+            } finally {
                 safelyClose(is);
                 safelyClose(reader);
             }
@@ -152,6 +125,16 @@ public class DataBaserXStreamImpl implements IDataBaser {
         } finally {
             safelyClose(outStream);
             safelyClose(writer);
+
+        }
+    }
+
+    private enum Format {
+        Json(new JettisonMappedXmlDriver()), Xml(new DomDriver());
+        final AbstractDriver driver;
+
+        Format(AbstractDriver drv) {
+            this.driver = drv;
         }
     }
 

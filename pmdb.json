@@ -1,1 +1,164 @@
-{"object-stream":{"map":[{"entry":[{"string":"name.eipi.pacemaker.models.Activity","map":[{"entry":[{"long":1,"activity":{"id":1,"type":"Walk","location":"Fridge","distance":0.1,"routes":[{"@class":"list"}]}},{"long":2,"activity":{"id":2,"type":"Walk","location":"Car","distance":1,"routes":[{"@class":"list"}]}},{"long":3,"activity":{"id":3,"type":"Drive","location":"Bar","distance":10,"routes":[{"@class":"list"}]}},{"long":4,"activity":{"id":4,"type":"Drive","location":"Gig","distance":1000,"routes":[{"@class":"list"}],"startTime":{"iMillis":329835600000,"iChronology":{"@class":"org.joda.time.chrono.ISOChronology","@resolves-to":"org.joda.time.chrono.ISOChronology$Stub","@serialization":"custom","org.joda.time.chrono.ISOChronology$Stub":{"org.joda.time.tz.CachedDateTimeZone":{"@resolves-to":"org.joda.time.DateTimeZone$Stub","@serialization":"custom","org.joda.time.DateTimeZone$Stub":{"string":"Europe\/London"}}}}},"duration":{"iMillis":43200000}}}]}]},{"string":"name.eipi.pacemaker.models.User","map":[{"entry":[{"long":1,"user":{"id":1,"firstName":"Homer","lastName":"Simpson","email":"homer@sector.7g","password":"duff","activities":[{"@class":"list","long":[1,2,3]}]}},{"long":3,"user":{"id":3,"firstName":"Margerial","lastName":"Simpson","email":"marge@home.com","password":"milkywhitemountainspidermonkeys","activities":[{"@class":"list"}]}},{"long":4,"user":{"id":4,"firstName":"Elwood","lastName":"Blues","email":"elwood@state.pen","password":"Jake","activities":[{"@class":"list","long":4}]}},{"long":5,"user":{"id":5,"firstName":"Jake","lastName":"Blues","email":"mission@god.com","password":"sweethomechicago","activities":[{"@class":"list"}]}}]}]}]}]}}
+{"object-stream": {
+    "map": [
+        {
+            "entry": [
+                {
+                    "string": "name.eipi.pacemaker.models.Activity",
+                    "map": [
+                        {
+                            "entry": [
+                                {
+                                    "long": 1,
+                                    "activity": {
+                                        "id": 1,
+                                        "type": "Walk",
+                                        "location": "Fridge",
+                                        "distance": 0.1,
+                                        "routes": [
+                                            {
+                                                "@class": "list"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "long": 2,
+                                    "activity": {
+                                        "id": 2,
+                                        "type": "Walk",
+                                        "location": "Car",
+                                        "distance": 1,
+                                        "routes": [
+                                            {
+                                                "@class": "list"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "long": 3,
+                                    "activity": {
+                                        "id": 3,
+                                        "type": "Drive",
+                                        "location": "Bar",
+                                        "distance": 10,
+                                        "routes": [
+                                            {
+                                                "@class": "list"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "long": 4,
+                                    "activity": {
+                                        "id": 4,
+                                        "type": "Drive",
+                                        "location": "Gig",
+                                        "distance": 1000,
+                                        "routes": [
+                                            {
+                                                "@class": "list"
+                                            }
+                                        ],
+                                        "startTime": {
+                                            "iMillis": 329835600000,
+                                            "iChronology": {
+                                                "@class": "org.joda.time.chrono.ISOChronology",
+                                                "@resolves-to": "org.joda.time.chrono.ISOChronology$Stub",
+                                                "@serialization": "custom",
+                                                "org.joda.time.chrono.ISOChronology$Stub": {
+                                                    "org.joda.time.tz.CachedDateTimeZone": {
+                                                        "@resolves-to": "org.joda.time.DateTimeZone$Stub",
+                                                        "@serialization": "custom",
+                                                        "org.joda.time.DateTimeZone$Stub": {
+                                                            "string": "Europe\/London"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "duration": {
+                                            "iMillis": 43200000
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "string": "name.eipi.pacemaker.models.User",
+                    "map": [
+                        {
+                            "entry": [
+                                {
+                                    "long": 1,
+                                    "user": {
+                                        "id": 1,
+                                        "firstName": "Homer",
+                                        "lastName": "Simpson",
+                                        "email": "homer@sector.7g",
+                                        "password": "duff",
+                                        "activities": [
+                                            {
+                                                "@class": "list",
+                                                "long": [1, 2, 3]
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "long": 3,
+                                    "user": {
+                                        "id": 3,
+                                        "firstName": "Margerial",
+                                        "lastName": "Simpson",
+                                        "email": "marge@home.com",
+                                        "password": "milkywhitemountainspidermonkeys",
+                                        "activities": [
+                                            {
+                                                "@class": "list"
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "long": 4,
+                                    "user": {
+                                        "id": 4,
+                                        "firstName": "Elwood",
+                                        "lastName": "Blues",
+                                        "email": "elwood@state.pen",
+                                        "password": "Jake",
+                                        "activities": [
+                                            {
+                                                "@class": "list",
+                                                "long": 4
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    "long": 5,
+                                    "user": {
+                                        "id": 5,
+                                        "firstName": "Jake",
+                                        "lastName": "Blues",
+                                        "email": "mission@god.com",
+                                        "password": "sweethomechicago",
+                                        "activities": [
+                                            {
+                                                "@class": "list"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}}

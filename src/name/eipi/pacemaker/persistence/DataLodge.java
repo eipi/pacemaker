@@ -46,7 +46,7 @@ public class DataLodge {
     }
 
     private void initWorkingMemory() {
-        if (!load())  {
+        if (!load()) {
             reset();
         }
     }

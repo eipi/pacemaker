@@ -1,7 +1,5 @@
 package name.eipi.services.logger;
 
-import java.util.Calendar;
-
 /**
  * Created by dbdon_000 Date: 10/08/13
  */
@@ -20,7 +18,9 @@ public class LoggerFactory {
 
     public static void setTestMode(Boolean isTest) {
         DELETE_ON_EXIT = isTest;
-        PREFIX += "Test";
+        if (!PREFIX.endsWith("Test")) {
+            PREFIX += "Test";
+        }
     }
 
     public static Logger getInstance(final Class clazz) {
