@@ -1,7 +1,8 @@
 package name.eipi.pacemaker.persistence;
 
 import name.eipi.pacemaker.BaseTestPacemaker;
-import name.eipi.pacemaker.controllers.PacemakerAPI;
+import name.eipi.pacemaker.controllers.PacemakerApi;
+import name.eipi.pacemaker.controllers.PacemakerImpl;
 import name.eipi.pacemaker.models.TestData;
 import name.eipi.pacemaker.models.User;
 import org.junit.After;
@@ -16,12 +17,12 @@ import static junit.framework.TestCase.assertTrue;
  */
 public class DatabaserXStreamImplTest extends BaseTestPacemaker {
 
-    PacemakerAPI api;
+    PacemakerApi api;
     User user = TestData.createUser();
 
     @Before
     public void setUp() {
-        api = new PacemakerAPI("XStreamTest");
+        api = new PacemakerImpl("XStreamTest");
         api.changeFormat("json");
 
     }
@@ -36,14 +37,14 @@ public class DatabaserXStreamImplTest extends BaseTestPacemaker {
         user = api.createUser(user).value();
         api.save();
         api = null;
-        api = new PacemakerAPI("XStreamTest");
+        api = new PacemakerImpl("XStreamTest");
         api.changeFormat("json");
         api.load();
         assertTrue(api.getUsers().contains(user));
         api.changeFormat("xml");
         api.save();
         api = null;
-        api = new PacemakerAPI("XStreamTest");
+        api = new PacemakerImpl("XStreamTest");
         api.changeFormat("xml");
         api.load();
         assertTrue(api.getUsers().contains(user));
@@ -51,7 +52,7 @@ public class DatabaserXStreamImplTest extends BaseTestPacemaker {
         api.changeFormat("json");
         api.save();
         api = null;
-        api = new PacemakerAPI("XStreamTest");
+        api = new PacemakerImpl("XStreamTest");
         api.changeFormat("json");
         api.load();
         assertFalse(api.getUsers().contains(user));

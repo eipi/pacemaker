@@ -18,15 +18,15 @@ import static junit.framework.TestCase.assertTrue;
  */
 public class PacemakerApiTestActivityActions extends BaseTestPacemaker {
 
-    PacemakerAPI api;
+    PacemakerImpl api;
 
     private User user = TestData.createUser();
     private Activity activity = TestData.createActivity();
-    private APIResponse<Activity> response = null;
+    private ApiResponse<Activity> response = null;
 
     @Before
     public void setUp() {
-        api = new PacemakerAPI("PacemakerApiTest");
+        api = new PacemakerImpl("PacemakerApiTest");
         user = api.createUser(user).value();
         response = api.addActivity(user.getId(), activity);
     }
@@ -50,7 +50,7 @@ public class PacemakerApiTestActivityActions extends BaseTestPacemaker {
     public void testCreateFail() {
         User newUser = api.createUser(TestData.createUser()).value();
         api.deleteUser(newUser.getId());
-        APIResponse<Activity> create = api.addActivity(newUser.getId(), activity);
+        ApiResponse<Activity> create = api.addActivity(newUser.getId(), activity);
         assertFalse(create.isSuccess());
 
     }

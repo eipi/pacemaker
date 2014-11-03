@@ -34,7 +34,7 @@ public class TestData {
     }
 
     public static Location createLocation() {
-        return new Location(new DateTime().hashCode(), new Date().hashCode());
+        return new Location(Double.valueOf(new DateTime().hashCode()), Double.valueOf(System.currentTimeMillis()));
     }
 
 }

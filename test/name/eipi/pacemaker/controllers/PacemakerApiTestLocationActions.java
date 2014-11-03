@@ -15,16 +15,16 @@ import static junit.framework.TestCase.*;
  */
 public class PacemakerApiTestLocationActions extends BaseTestPacemaker {
 
-    PacemakerAPI api;
+    PacemakerImpl api;
 
     private User user = TestData.createUser();
     private Activity activity = TestData.createActivity();
     private Location location = TestData.createLocation();
-    private APIResponse<Location> apiResponse = null;
+    private ApiResponse<Location> apiResponse = null;
 
     @Before
     public void setUp() {
-        api = new PacemakerAPI("PacemakerApiTest");
+        api = new PacemakerImpl("PacemakerApiTest");
         user = api.createUser(user).value();
         activity = api.addActivity(user.getId(), activity).value();
         apiResponse = api.addLocation(activity.getId(), location);
@@ -49,7 +49,7 @@ public class PacemakerApiTestLocationActions extends BaseTestPacemaker {
     public void testCreateFail() {
         User newUser = api.createUser(TestData.createUser()).value();
         api.deleteUser(newUser.getId());
-        APIResponse<Location> create = api.addLocation(newUser.getId(), location);
+        ApiResponse<Location> create = api.addLocation(newUser.getId(), location);
         assertFalse(create.isSuccess());
     }
 

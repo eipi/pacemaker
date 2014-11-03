@@ -17,13 +17,13 @@ import static junit.framework.TestCase.assertTrue;
 public class PacemakerApiTestUserActions extends BaseTestPacemaker {
 
     private static final String email = "dbdonovan@gmail.com";
-    PacemakerAPI api;
+    PacemakerImpl api;
     User me;
     User you;
 
     @Before
     public void setUp() {
-        api = new PacemakerAPI("PacemakerApiTest");
+        api = new PacemakerImpl("PacemakerApiTest");
         me = api.createUser(TestData.createUser(email)).value();
         you = api.createUser("The Great", "Anon", "us@them.pi", "anonymous").value();
 
@@ -57,14 +57,14 @@ public class PacemakerApiTestUserActions extends BaseTestPacemaker {
     @Test
     public void testCreateFail() {
         User user = TestData.createUser(email);
-        APIResponse response = api.createUser(user);
+        ApiResponse response = api.createUser(user);
         assertFalse(response.isSuccess());
         assertNotNull(response.getMessage());
     }
 
     @Test
     public void testDelete() {
-        APIResponse<User> response = api.deleteUser(you.getId());
+        ApiResponse<User> response = api.deleteUser(you.getId());
         assertTrue(response.isSuccess());
         assertNotNull(response.value());
         assertTrue(response.value().getEmail().equals(you.getEmail()));
