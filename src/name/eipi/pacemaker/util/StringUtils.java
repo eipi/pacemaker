@@ -34,9 +34,26 @@ public class StringUtils {
             return NULL;
         }
         StringBuilder sb = new StringBuilder(CR);
+
         try {
             Collection<Collection<Element>> elements = new ArrayList<Collection<Element>>();
-            List<Method> display = applyCustomOrderingAndFiltering(coll.iterator().next());
+
+            T firstOne = coll.iterator().next();
+            String title = firstOne.getClass().getSimpleName();
+
+            if (coll.size() > 1) {
+                if (title.endsWith("y")) {
+                    sb.append(title.substring(0, title.length() - 1) + "ies");
+                } else if (!title.endsWith("s")) {
+                    sb.append(title).append("s");
+                }
+            } else {
+                sb.append(title);
+            }
+            sb.append(CR);
+
+            List<Method> display = applyCustomOrderingAndFiltering(firstOne);
+
 
             Integer maxHorizBorder = 1;
 
@@ -182,7 +199,6 @@ public class StringUtils {
     }
 
 }
-
 
 class Element {
     String name;

@@ -61,18 +61,20 @@ public class DataBaserXStreamImpl implements IDataBaser {
     }
 
     @Override
-    public void changeFormat(String format) {
+    public boolean changeFormat(String format) {
 
-        new File(connString).delete();
         // TODO a better way?
         if ("xml".equalsIgnoreCase(format)) {
             fmt = Format.Xml;
         } else if ("json".equalsIgnoreCase(format)) {
             fmt = Format.Json;
+        }  else {
+            return false;
         }
+        new File(connString).delete();
         initializeXstream();
         setConnString();
-
+        return true;
     }
 
     @Override

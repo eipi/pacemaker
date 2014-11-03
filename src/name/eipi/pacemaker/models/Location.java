@@ -7,15 +7,15 @@ public class Location extends BaseEntity {
 
     @Getter
     @Setter
-    protected int latitude;
+    protected Double latitude;
     @Getter
     @Setter
-    protected int longitude;
+    protected Double longitude;
 
     /**
      * No default, just this.
      */
-    public Location(int latitude, int longitude) {
+    public Location(Double latitude, Double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }

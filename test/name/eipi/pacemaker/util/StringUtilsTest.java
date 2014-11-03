@@ -1,8 +1,7 @@
-package name.eipi.util;
+package name.eipi.pacemaker.util;
 
 import name.eipi.pacemaker.models.User;
 import name.eipi.pacemaker.persistence.DataLodge;
-import name.eipi.pacemaker.util.StringUtils;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -57,9 +56,14 @@ public class StringUtilsTest {
 
         String line = null;
         while ((line = reader.readLine()) != null) {
-            if (firstLineLength == -1) {
+            if (firstLineLength < 1) {
                 if (line.length() > 0) {
-                    firstLineLength = line.length();
+                    if (firstLineLength == -1) {
+                        //First non-empty line is the title, skip it.
+                        firstLineLength++;
+                    } else {
+                        firstLineLength = line.length();
+                    }
                 }
             } else {
                 assertTrue(line.length() == 0 || line.length() == firstLineLength);

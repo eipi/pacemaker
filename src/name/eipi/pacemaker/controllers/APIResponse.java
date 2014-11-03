@@ -8,7 +8,7 @@ import java.util.ArrayList;
 /**
  * Created by naysayer on 18/10/2014.
  */
-public class APIResponse<T> extends ArrayList<T> {
+public class ApiResponse<T> extends ArrayList<T> {
 
     @Setter
     private Boolean success;

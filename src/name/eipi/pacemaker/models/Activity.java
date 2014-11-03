@@ -18,7 +18,7 @@ public class Activity extends BaseEntity {
     protected String location;
     @Getter
     @Setter
-    protected double distance;
+    protected Double distance;
     @Getter
     protected Collection<Long> routes;
     @Getter
@@ -35,7 +35,7 @@ public class Activity extends BaseEntity {
      * @param location
      * @param distance
      */
-    public Activity(String type, String location, double distance) {
+    public Activity(String type, String location, Double distance) {
         this.type = type;
         this.location = location;
         this.distance = distance;
@@ -49,7 +49,7 @@ public class Activity extends BaseEntity {
      * @param location
      * @param distance
      */
-    public Activity(String type, String location, double distance, DateTime startTime, Duration duration) {
+    public Activity(String type, String location, Double distance, DateTime startTime, Duration duration) {
         this(type, location, distance);
         this.startTime = startTime;
         this.duration = duration;

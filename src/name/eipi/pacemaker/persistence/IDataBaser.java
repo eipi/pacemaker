@@ -10,6 +10,6 @@ public interface IDataBaser {
     Object read();
 
     // Should be in interface? Kind of Impl specific.
-    void changeFormat(String format);
+    boolean changeFormat(String format);
 
 }

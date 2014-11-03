@@ -138,9 +138,13 @@ public class DataLodge {
         return db.write(workingMemory);
     }
 
-    public void changeFormat(String format) {
-        db.changeFormat(format);
-        db.write(workingMemory);
+    public boolean changeFormat(String format) {
+        if (db.changeFormat(format)) {
+            db.write(workingMemory);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // END FILE OPS

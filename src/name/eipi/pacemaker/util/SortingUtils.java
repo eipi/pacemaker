@@ -36,7 +36,7 @@ class ActivityComparator implements Comparator<Activity> {
             case "location":
                 return o1.getLocation().compareTo(o2.getLocation());
             case "distance":
-                return ((Double) o1.getDistance()).compareTo(o2.getDistance());
+                return o1.getDistance().compareTo(o2.getDistance());
             case "starttime":
                 return o1.getStartTime().compareTo(o2.getStartTime());
             case "duration":
