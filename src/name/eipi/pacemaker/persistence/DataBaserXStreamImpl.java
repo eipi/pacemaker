@@ -7,8 +7,6 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import name.eipi.pacemaker.models.Activity;
 import name.eipi.pacemaker.models.Location;
 import name.eipi.pacemaker.models.User;
-import name.eipi.services.logger.Logger;
-import name.eipi.services.logger.LoggerFactory;
 
 import java.io.*;
 
@@ -19,7 +17,6 @@ import java.io.*;
  */
 public class DataBaserXStreamImpl implements IDataBaser {
 
-    private static final Logger LOG = LoggerFactory.getInstance(DataBaserXStreamImpl.class);
     public static boolean DELETE_ON_EXIT = Boolean.FALSE;
     private String connString = "default.lodge";
     private XStream xstream = null;
@@ -97,7 +94,6 @@ public class DataBaserXStreamImpl implements IDataBaser {
                     return obj;
                 }
             } catch (Exception ex) {
-                LOG.error(ex.getMessage(), ex);
             } finally {
                 safelyClose(is);
                 safelyClose(reader);
@@ -122,7 +118,6 @@ public class DataBaserXStreamImpl implements IDataBaser {
             outStream.writeObject(workingMemory);
             return true;
         } catch (Throwable t) {
-            LOG.error("Error saving to file.", t);
             return false;
         } finally {
             safelyClose(outStream);

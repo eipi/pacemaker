@@ -2,8 +2,6 @@ package name.eipi.pacemaker.persistence;
 
 
 import name.eipi.pacemaker.models.BaseEntity;
-import name.eipi.services.logger.Logger;
-import name.eipi.services.logger.LoggerFactory;
 
 import java.util.*;
 
@@ -15,10 +13,6 @@ import java.util.*;
  */
 public class DataLodge {
 
-    private static final Logger LOG = LoggerFactory.getInstance(DataLodge.class);
-    /**
-     * Databaser.
-     */
     private IDataBaser db = null;
 
     /*
@@ -113,11 +107,9 @@ public class DataLodge {
                 }
                 return returnObj;
             } else {
-                LOG.error("Not found for delete : " + t.getClass() + t.getId());
                 return t;
             }
         } else {
-            LOG.error("Bad arg in delete : " + t.getClass() + t.getId());
             return t;
         }
     }

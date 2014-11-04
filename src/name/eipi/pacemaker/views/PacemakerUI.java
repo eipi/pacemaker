@@ -22,34 +22,13 @@ public class PacemakerUI {
     private PrintStream out;
     private PrintStream err;
 
-    /**
-     * Mixed will display data and regular messages in white, but error messages in red.
-     * White will display all information in white, and Red all information in red.
-     * TODO: Investigate alternate methods of specifying output colour.
-     */
-    public enum ColorScheme {
-        mixed,
-        white,
-        red
-
-    }
-
-    private static ColorScheme colorScheme = ColorScheme.mixed;
-
     /** Display deep entity relationships on read. */
     private static boolean extendedPrettyPrint = false;
 
     public PacemakerUI(PacemakerApi api) {
         paceApi = api;
-        setColorScheme();
-    }
-
-    private void setColorScheme() {
-        switch (colorScheme) {
-            case mixed : this.out = System.out; this.err = System.err; break;
-            case white : this.out = this.err = System.out; break;
-            case red : this.out = this.err = System.err; break;
-        }
+        out = System.out;
+        err = System.err;
     }
 
     @Command(description = "List all Users")
@@ -202,31 +181,21 @@ public class PacemakerUI {
     // UI Specific option.
     @Command(description = "Change UI Settings")
     public void updateInterface(
-        @Param(name = "option: extended | colour") String option,
-        @Param(name = "value: extended(Y|N), colour(mixed|red|white)")String value) {
+        @Param(name = "option: Extended output on/off.") String option,
+        @Param(name = "Y/N")String value) {
         if (option.startsWith("extended")) {
             switch (value.toLowerCase().trim()) {
-                case "on" :
+                case "y" :
                     extendedPrettyPrint=true;
                     break;
-                case "off" :
+                case "n" :
                     extendedPrettyPrint=false;
                     break;
                 default:
                     out.println("Invalid value \"" + value + "\".\r\n" +
-                            "Valid choices are \"on\" and \"off\".");
+                            "Valid choices are \"y\" and \"n\".");
             }
 
-        } else if (option.startsWith("colour")) {
-            switch (value.toLowerCase().trim()) {
-                case "mixed" : colorScheme = ColorScheme.mixed; break;
-                case "red" :  colorScheme = ColorScheme.red; break;
-                case "white" : colorScheme = ColorScheme.white; break;
-                default:
-                    out.println("Invalid value \"" + value + "\".\r\n" +
-                        "Valid choices are \"mixed\", \"red\", or \"white\".");
-            }
-            setColorScheme();
         }
     }
 

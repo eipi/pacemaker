@@ -7,17 +7,10 @@ import name.eipi.pacemaker.models.User;
 import name.eipi.pacemaker.persistence.DataLodge;
 import name.eipi.pacemaker.util.DateTimeUtils;
 import name.eipi.pacemaker.util.SortingUtils;
-import name.eipi.services.logger.Logger;
-import name.eipi.services.logger.LoggerFactory;
 
 import java.util.*;
 
 public class PacemakerImpl implements PacemakerApi {
-
-    /**
-     * Logger.
-     */
-    private static final Logger LOG = LoggerFactory.getInstance(PacemakerImpl.class);
 
     /**
      * Manages read and write operations for objects extending BaseEntity.
@@ -64,7 +57,6 @@ public class PacemakerImpl implements PacemakerApi {
         if (emailIndex.containsKey(user.getEmail())) {
             response.setSuccess(Boolean.FALSE);
             response.setMessage("This email is already registered.");
-            LOG.error("User already exists : " + user.getEmail());
         } else {
             user = db.edit(user);
             emailIndex.put(user.getEmail(), user);
@@ -79,7 +71,6 @@ public class PacemakerImpl implements PacemakerApi {
         if (emailIndex.containsKey(email)) {
             return emailIndex.get(email);
         } else {
-            LOG.error("User not found : " + email);
             return null;
         }
     }
@@ -90,7 +81,6 @@ public class PacemakerImpl implements PacemakerApi {
         if (user != null) {
             return user;
         } else {
-            LOG.error("User not found : " + id);
             return null;
         }
     }
@@ -160,11 +150,19 @@ public class PacemakerImpl implements PacemakerApi {
 
     @Override
     public ApiResponse<Activity> addActivity(Long userId, String type, String location, Double distance, String startTime, String duration) {
+        ApiResponse response = new ApiResponse();
         Activity activity = new Activity(type, location, distance);
-        // TODO Next line throws an exception when passed bad arg, handle nicer?
-        activity.setStartTime(DateTimeUtils.parseDateTime(startTime));
-        activity.setDuration(DateTimeUtils.parseDuration(duration));
-        return addActivity(userId, activity);
+        User user = getUser(userId);
+        if (user != null) {
+            // TODO Next line throws an exception when passed bad arg, handle nicer?
+            activity.setStartTime(DateTimeUtils.parseDateTime(startTime));
+            activity.setDuration(DateTimeUtils.parseDuration(duration));
+            response = addActivity(userId, activity);
+        } else {
+            response.setSuccess(Boolean.FALSE);
+            response.setMessage("User not found : " + userId);
+        }
+        return response;
     }
 
     @Override
