@@ -2,8 +2,6 @@ package name.eipi.pacemaker.views;
 
 import asg.cliche.Command;
 import asg.cliche.Param;
-import lombok.Getter;
-import lombok.Setter;
 import name.eipi.pacemaker.controllers.ApiResponse;
 import name.eipi.pacemaker.controllers.PacemakerApi;
 import name.eipi.pacemaker.models.Activity;
@@ -22,7 +20,9 @@ public class PacemakerUI {
     private PrintStream out;
     private PrintStream err;
 
-    /** Display deep entity relationships on read. */
+    /**
+     * Display deep entity relationships on read.
+     */
     private static boolean extendedPrettyPrint = false;
 
     public PacemakerUI(PacemakerApi api) {
@@ -170,7 +170,7 @@ public class PacemakerUI {
 
     @Command(description = "Change file format")
     public void changeFileFormat(@Param(name = "file format: xml, json") String format) {
-       ApiResponse response = paceApi.changeFormat(format);
+        ApiResponse response = paceApi.changeFormat(format);
         if (response.isSuccess()) {
             out.println("DataBaser converted to " + format);
         } else {
@@ -179,24 +179,21 @@ public class PacemakerUI {
     }
 
     // UI Specific option.
-    @Command(description = "Change UI Settings")
-    public void updateInterface(
-        @Param(name = "option: Extended output on/off.") String option,
-        @Param(name = "Y/N")String value) {
-        if (option.startsWith("extended")) {
-            switch (value.toLowerCase().trim()) {
-                case "y" :
-                    extendedPrettyPrint=true;
-                    break;
-                case "n" :
-                    extendedPrettyPrint=false;
-                    break;
-                default:
-                    out.println("Invalid value \"" + value + "\".\r\n" +
-                            "Valid choices are \"y\" and \"n\".");
-            }
-
+    @Command(description = "Extended Output On/Off")
+    public void extendedOutput(
+            @Param(name = "Y/N") String value) {
+        switch (value.toLowerCase().trim()) {
+            case "y":
+                extendedPrettyPrint = true;
+                break;
+            case "n":
+                extendedPrettyPrint = false;
+                break;
+            default:
+                out.println("Invalid value \"" + value + "\".\r\n" +
+                        "Valid choices are \"y\" and \"n\".");
         }
-    }
 
+    }
 }
+

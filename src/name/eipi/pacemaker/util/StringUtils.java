@@ -13,7 +13,6 @@ import java.util.*;
 public class StringUtils {
 
     private static final String CR = "\r\n";
-    private static final String NULL = "\u2205";
     private static final String GET = "get";
     private static final String GET_CLASS = "getClass";
     private static final Integer PAD = 2;
@@ -31,7 +30,7 @@ public class StringUtils {
     public static <T extends BaseEntity> String toFancyString(Collection<T> coll) {
 
         if (coll == null || coll.isEmpty() || (coll.size() == 1 && coll.iterator().next() == null)) {
-            return NULL;
+            return "";
         }
         StringBuilder sb = new StringBuilder(CR);
 
@@ -112,7 +111,6 @@ public class StringUtils {
             sb.append(CORNER);
             appendHoriz(sb, maxHorizBorder - 2);
             sb.append(CORNER);
-            sb.append(CR);
 
         } catch (Throwable t) {
             t.printStackTrace();

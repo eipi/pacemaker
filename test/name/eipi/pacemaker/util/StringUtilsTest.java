@@ -25,7 +25,7 @@ public class StringUtilsTest {
         validateOutput(output);
 
         user = null;
-        assertTrue("\u2205".equals(StringUtils.toFancyString(user)));
+        assertTrue("".equals(StringUtils.toFancyString(user)));
 
 
     }
